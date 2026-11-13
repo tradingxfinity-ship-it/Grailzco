@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Grailz Co — Website
 
-## Getting Started
+Three-page marketing and card-submission site for Grailz Co.
+Built with Next.js 15 (App Router), TypeScript, Tailwind CSS v4, Motion and Lucide.
 
-First, run the development server:
+| Route           | Purpose                                            |
+| --------------- | -------------------------------------------------- |
+| `/`             | Homepage — brand, categories, trust, process, CTA  |
+| `/sell`         | Card submission form (emails Grailz Co via Resend) |
+| `/how-it-works` | Process, submission guide and FAQ                  |
+
+## Getting started
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+cp .env.example .env.local   # then fill in the values
+npm run dev                  # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Submission email setup (required)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The Sell form posts to `src/app/api/submit/route.ts`, which validates everything
+server-side and sends one email per submission through [Resend](https://resend.com),
+with the photos attached. The visitor only sees the success screen after Resend
+accepts the email. If configuration is missing, the API returns a 503 and the form
+shows an error **without** clearing the visitor's details.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. Create a Resend account and an API key.
+2. Verify the sending domain in Resend (Domains → Add domain → add the DNS records).
+3. Set these environment variables (locally in `.env.local`, and in your host's settings):
 
-## Learn More
+| Variable                    | Required | Example                                            |
+| --------------------------- | -------- | -------------------------------------------------- |
+| `GRAILZCO_SUBMISSION_EMAIL` | yes      | `submissions@grailzco.com` (comma-separate several) |
+| `RESEND_API_KEY`            | yes      | `re_…` (server-only)                               |
+| `RESEND_FROM_EMAIL`         | yes      | `Grailz Co Submissions <noreply@grailzco.com>`     |
+| `NEXT_PUBLIC_SITE_URL`      | prod     | `https://grailzco.com`                             |
+| `NEXT_PUBLIC_CONTACT_EMAIL` | optional | Public address shown in the footer                 |
 
-To learn more about Next.js, take a look at the following resources:
+The email's **Reply-To** is the collector's address, so Grailz Co can reply directly.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Upload limits
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Photos are resized in the browser (longest edge 1800 px, JPEG) before upload. Defaults:
+12 photos per submission, 6 per card, 10 cards, originals up to 20 MB, **4 MB total upload**.
+The 4 MB total keeps requests under Vercel's ~4.5 MB serverless body limit. If you host
+somewhere with a larger limit, raise `NEXT_PUBLIC_SUBMISSION_MAX_TOTAL_MB` (Resend allows
+up to 40 MB per email). For much larger uploads, switch to private object storage
+(e.g. S3 with signed URLs) and email links instead of attachments.
 
-## Deploy on Vercel
+### Abuse protection
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Hidden honeypot field and a minimum fill-time check
+- In-memory per-IP rate limit (5 submissions / 10 min). This is per server instance;
+  for stronger protection on serverless hosts add a shared limiter (e.g. Upstash) or a
+  platform firewall rule.
+- Server-side file signature checks (JPEG/PNG/WebP only), count and size limits
+- Idempotency key per submission to prevent duplicate emails on retry
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Content and placeholders
+
+| What                         | Where                                    |
+| ---------------------------- | ---------------------------------------- |
+| Site name, nav, Whatnot URL  | `src/config/site.ts`                     |
+| All page copy, FAQ, tips     | `src/content/copy.ts`                    |
+| Every image slot             | `src/content/images.ts`                  |
+| Form options and limits      | `src/lib/submission.ts`                  |
+| Submission email template    | `src/lib/email.ts`                       |
+
+**Images:** every visual currently renders a labelled placeholder (abstract holographic
+foil in a card or slab frame). To use real photography, add files to `public/images/` and
+set `src` and `alt` for the slot in `src/content/images.ts`. Use only photography Grailz Co
+owns or is licensed to use.
+
+**Still needed from Grailz Co:**
+
+- Official logo / brand assets (the current wordmark lives in `src/components/ui/Logo.tsx`)
+- Card and slab photography for each image slot
+- Whatnot show imagery or schedule (`src/components/home/Whatnot.tsx`)
+- Public contact email (`NEXT_PUBLIC_CONTACT_EMAIL`)
+- Open Graph image (`/public/og.jpg`, 1200×630; uncomment in `src/app/layout.tsx`)
+- Final confirmation of FAQ answers against company policy

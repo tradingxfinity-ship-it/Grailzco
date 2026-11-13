@@ -1,26 +1,199 @@
 @import "tailwindcss";
 
+/* ---------------------------------------------------------------------------
+   Grailz Co design tokens
+   Official: Deep Navy #000E28 · Electric Mint #37F5C7 · White #FFFFFF
+--------------------------------------------------------------------------- */
+@theme {
+  --color-navy: #000e28;
+  --color-navy-900: #000a1e;
+  --color-navy-800: #04173a;
+  --color-navy-700: #0a2149;
+  --color-navy-600: #132c58;
+  --color-mint: #37f5c7;
+  --color-mint-soft: #9ff9e2;
+  --color-mint-deep: #13c99c;
+  --color-mist: #9fb0cb; /* secondary text — 8.6:1 on navy */
+  --color-haze: #6b7f9f; /* tertiary / metadata — 4.7:1 on navy */
+  --color-line: rgb(159 176 203 / 0.14);
+  --color-paper: #eef2f6;
+  --color-ink: #000e28;
+
+  --font-display: var(--font-bricolage), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, monospace;
+
+  --ease-grail: cubic-bezier(0.22, 1, 0.36, 1);
+  --radius-slab: 1.375rem;
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: dark;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+html {
+  background: var(--color-navy);
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-navy);
+  color: #fff;
+  font-family: var(--font-sans);
+  overflow-x: clip;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-mint);
+  color: var(--color-navy);
+}
+
+/* Focus: consistent, highly visible mint ring for keyboard users */
+:focus-visible {
+  outline: 2px solid var(--color-mint);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+/* Anchor targets clear the sticky header */
+[id] {
+  scroll-margin-top: 6rem;
+}
+
+@layer components {
+  .container-grail {
+    width: 100%;
+    max-width: 88rem;
+    margin-inline: auto;
+    padding-inline: 1.25rem;
+  }
+  @media (min-width: 768px) {
+    .container-grail {
+      padding-inline: 2.5rem;
+    }
+  }
+  @media (min-width: 1280px) {
+    .container-grail {
+      padding-inline: 3.5rem;
+    }
+  }
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-mist);
+  }
+
+  .display-xl {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(3rem, 8.4vw, 8.75rem);
+    line-height: 0.92;
+    letter-spacing: -0.045em;
+  }
+  .display-lg {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(2.5rem, 5.6vw, 5.5rem);
+    line-height: 0.96;
+    letter-spacing: -0.04em;
+  }
+  .display-md {
+    font-family: var(--font-display);
+    font-weight: 650;
+    font-size: clamp(2rem, 3.8vw, 3.5rem);
+    line-height: 1;
+    letter-spacing: -0.035em;
+  }
+  .lede {
+    font-size: clamp(1.05rem, 1.35vw, 1.25rem);
+    line-height: 1.6;
+    color: var(--color-mist);
+  }
+
+  /* Fine reflective hairline used on slabs and panels */
+  .hairline {
+    position: relative;
+  }
+  .hairline::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      140deg,
+      rgb(255 255 255 / 0.28),
+      rgb(255 255 255 / 0.04) 30%,
+      rgb(55 245 199 / 0.22) 62%,
+      rgb(255 255 255 / 0.06)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* Subtle film grain to keep large navy fields from feeling flat */
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.06;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  .grid-faint {
+    background-image:
+      linear-gradient(to right, rgb(159 176 203 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(159 176 203 / 0.06) 1px, transparent 1px);
+    background-size: 72px 72px;
+  }
+}
+
+/* Holographic foil — driven by --mx/--my (0–100) where pointer-aware */
+.holo-foil {
+  background:
+    radial-gradient(
+      circle at calc(var(--mx, 50) * 1%) calc(var(--my, 50) * 1%),
+      rgb(255 255 255 / 0.35),
+      transparent 38%
+    ),
+    conic-gradient(
+      from calc(var(--mx, 50) * 1.8deg) at 50% 55%,
+      #0b2a5c,
+      #1a5e8a,
+      #37f5c7,
+      #2a3f8f,
+      #7a6cf0,
+      #0b2a5c,
+      #37f5c7aa,
+      #0b2a5c
+    );
+  background-blend-mode: soft-light, normal;
+}
+
+.holo-sheen {
+  background: linear-gradient(
+    115deg,
+    transparent calc(var(--mx, 50) * 1% - 30%),
+    rgb(255 255 255 / 0.16) calc(var(--mx, 50) * 1% - 8%),
+    rgb(55 245 199 / 0.18) calc(var(--mx, 50) * 1%),
+    transparent calc(var(--mx, 50) * 1% + 22%)
+  );
+  mix-blend-mode: screen;
 }
