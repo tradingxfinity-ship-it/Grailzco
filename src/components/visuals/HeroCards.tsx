@@ -22,16 +22,16 @@ const POSE = [
  */
 export function HeroCards() {
   return (
-    <div className="relative mx-auto w-full [--card:clamp(4.6rem,21vw,13.25rem)]">
+    <div className="relative mx-auto w-[calc(var(--card)*4.1)] max-w-full [--card:clamp(4.6rem,min(21vw,19.5svh),13.25rem)]">
       {/* Speech-bubble tags */}
-      <Bubble className="left-[12%] top-[-1.75rem] sm:left-[14%] sm:top-[-2.5rem]" tone="light" delay={1.1} tail="left">
+      <Bubble className="left-[2%] top-[-1.5rem] sm:top-[-2rem]" tone="light" delay={1.1} tail="left">
         Your next grail?
       </Bubble>
-      <Bubble className="right-[6%] top-[-1.25rem] sm:right-[9%] sm:top-[-2rem]" tone="mint" delay={1.25} tail="right">
+      <Bubble className="right-[-2%] top-[-1rem] sm:top-[-1.5rem]" tone="mint" delay={1.25} tail="right">
         @grailzco
       </Bubble>
 
-      <ul className="flex items-center justify-center py-6 sm:py-8" aria-label="Featured Pokémon cards">
+      <ul className="flex items-center justify-center py-[min(2rem,3svh)]" aria-label="Featured Pokémon cards">
         {images.heroFan.map((card, i) => (
           <motion.li
             key={card.label}

@@ -15,17 +15,17 @@ export function Hero() {
         className="grid-faint absolute inset-0 [mask-image:radial-gradient(ellipse_at_50%_55%,black_15%,transparent_65%)]"
       />
 
-      <div className="container-grail relative flex flex-col items-center pb-20 pt-8 text-center md:pb-28 md:pt-10">
+      <div className="container-grail relative flex min-h-[calc(100svh-4.5rem)] flex-col items-center justify-center py-[min(2.5rem,4svh)] text-center md:min-h-[calc(100svh-5rem)]">
         <SplitHeadline
           id="hero-title"
           as="h1"
           immediate
           delay={0.1}
           lines={["Your Cards.", "Our *Passion.*"]}
-          className="font-display text-[clamp(3rem,6.8vw,6.5rem)] font-bold leading-[0.95] tracking-[-0.045em] text-white"
+          className="font-display text-[clamp(2.6rem,min(6.8vw,8.6svh),6.5rem)] font-bold leading-[0.95] tracking-[-0.045em] text-white"
         />
 
-        <div className="mt-10 w-full sm:mt-12">
+        <div className="mt-[min(3rem,4.5svh)] w-full">
           <HeroCards />
         </div>
 
@@ -33,7 +33,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 0.9, ease: EASE }}
-          className="lede mt-6 max-w-[34rem] sm:mt-8"
+          className="lede mt-[min(2rem,3svh)] max-w-[36rem] lg:max-w-[44rem]"
         >
           Great collections deserve great opportunities. Discover a simpler way to sell your collectible trading cards
           with Grailz Co.
@@ -43,7 +43,7 @@ export function Hero() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 1, delay: 1.05, ease: EASE }}
-          className="mt-8 flex flex-col items-center gap-5 sm:flex-row sm:gap-7"
+          className="mt-[min(2rem,3.5svh)] flex flex-col items-center gap-4 sm:flex-row sm:gap-7"
         >
           <ButtonLink href="/sell" size="lg">
             Sell Your Cards
