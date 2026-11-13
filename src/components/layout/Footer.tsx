@@ -66,20 +66,9 @@ export function Footer() {
         </div>
       </div>
 
-      <div
-        aria-hidden="true"
-        className="pointer-events-none select-none px-4 text-center font-display text-[22vw] font-bold leading-[0.75] tracking-[-0.06em] text-transparent [-webkit-text-stroke:1px_rgb(159_176_203/0.12)]"
-      >
-        Grailz
-      </div>
-
       <div className="border-t border-line">
         <div className="container-grail flex flex-col gap-2 py-6 text-sm text-haze sm:flex-row sm:items-center sm:justify-between">
           <p>© {year} Grailz Co. All rights reserved.</p>
-          <p className="max-w-xl text-xs leading-relaxed sm:text-right">
-            Pokémon is a trademark of Nintendo, Creatures Inc. and GAME FREAK inc. Grailz Co is not affiliated with or
-            endorsed by these companies.
-          </p>
         </div>
       </div>
     </footer>
