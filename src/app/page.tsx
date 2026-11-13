@@ -3,7 +3,6 @@ import { Hero } from "@/components/home/Hero";
 import { About } from "@/components/home/About";
 import { Categories } from "@/components/home/Categories";
 import { Why } from "@/components/home/Why";
-import { ProcessPreview } from "@/components/home/ProcessPreview";
 import { Whatnot } from "@/components/home/Whatnot";
 import { FinalCta } from "@/components/ui/FinalCta";
 
@@ -18,7 +17,6 @@ export default function HomePage() {
       <About />
       <Categories />
       <Why />
-      <ProcessPreview />
       <Whatnot />
       <FinalCta
         id="final-cta-title"

@@ -70,24 +70,6 @@ export const pillars = [
   },
 ] as const;
 
-export const processPreview = [
-  {
-    index: "01",
-    title: "Submit your cards",
-    body: "Tell Grailz Co about your cards and upload clear photographs.",
-  },
-  {
-    index: "02",
-    title: "We review",
-    body: "The team examines the information and images you provided.",
-  },
-  {
-    index: "03",
-    title: "Hear from us",
-    body: "Grailz Co gets in touch regarding an offer or next steps.",
-  },
-] as const;
-
 export const journey = [
   {
     index: "01",
