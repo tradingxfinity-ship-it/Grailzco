@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { CardArt } from "@/components/visuals/CardArt";
-import { EASE, Reveal, SectionLabel, SplitHeadline } from "@/components/ui/Reveal";
+import { EASE, Reveal } from "@/components/ui/Reveal";
 import { categories } from "@/content/copy";
 import { images } from "@/content/images";
 import { cn } from "@/lib/cn";
@@ -18,20 +18,11 @@ export function Categories() {
     <section aria-labelledby="look-title" className="relative overflow-hidden bg-navy-900 py-24 md:py-36">
       <div aria-hidden="true" className="absolute -left-40 top-1/3 size-[36rem] rounded-full bg-mint/[0.06] blur-[120px]" />
       <div className="container-grail relative">
-        <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-          <div>
-            <SectionLabel index="02">What we look for</SectionLabel>
-            <SplitHeadline id="look-title" lines={["Cards worth", "a *closer* look."]} className="display-lg mt-8" />
-          </div>
-          <Reveal delay={0.1}>
-            <p className="max-w-sm text-mist md:text-right">
-              Examples of what collectors submit. Every submission is reviewed individually — these aren&apos;t a promise
-              we&apos;ll purchase every category.
-            </p>
-          </Reveal>
-        </div>
+        <h2 id="look-title" className="sr-only">
+          What we look for
+        </h2>
 
-        <div className="mt-16 grid gap-10 lg:mt-24 lg:grid-cols-12 lg:gap-12">
+        <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
           {/* Sticky showcase (desktop) */}
           <div className="hidden lg:col-span-5 lg:block">
             <div className="sticky top-28">

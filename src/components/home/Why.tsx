@@ -8,7 +8,7 @@ export function Why() {
       <div className="container-grail">
         <div className="grid gap-10 lg:grid-cols-12">
           <div className="lg:col-span-5">
-            <SectionLabel index="03">Why Grailz Co</SectionLabel>
+            <SectionLabel index="02">Why Grailz Co</SectionLabel>
           </div>
           <div className="lg:col-span-7">
             <SplitHeadline id="why-title" lines={["Made for Collectors.", "Built on *Trust.*"]} className="display-lg" />

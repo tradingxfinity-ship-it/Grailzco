@@ -12,7 +12,7 @@ export function ProcessPreview() {
       <div className="container-grail relative">
         <div className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
           <div>
-            <SectionLabel index="04">The process</SectionLabel>
+            <SectionLabel index="03">The process</SectionLabel>
             <SplitHeadline id="process-title" lines={["Three steps.", "*No* guesswork."]} className="display-lg mt-8" />
           </div>
           <Reveal delay={0.1}>

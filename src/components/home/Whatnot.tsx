@@ -15,7 +15,7 @@ export function Whatnot() {
     <section aria-labelledby="whatnot-title" className="relative bg-paper py-24 text-ink md:py-32">
       <div className="container-grail grid items-center gap-14 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-6">
-          <SectionLabel index="05" className="!text-ink/70 [&_span:first-child]:!text-ink [&_span:nth-child(2)]:!bg-ink/30">
+          <SectionLabel index="04" className="!text-ink/70 [&_span:first-child]:!text-ink [&_span:nth-child(2)]:!bg-ink/30">
             Community
           </SectionLabel>
           <SplitHeadline
