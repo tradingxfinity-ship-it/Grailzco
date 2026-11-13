@@ -30,20 +30,21 @@ export const images = {
     { src: "/images/cards/vibrava.png", alt: "Vibrava illustration rare Pokémon card", label: "hero-vibrava" },
   ] satisfies ImageSlot[],
 
-  /** About section binder page, row by row (3×3). Files supplied by Grailz Co (330×460). */
+  /** About section binder page, row by row (4 per row on desktop). Files supplied by Grailz Co (330×460). */
   aboutBinder: [
     { src: "/images/cards/mega-charizard-x-ex.png", alt: "Mega Charizard X ex Pokémon card", label: "binder-mega-charizard-x" },
     { src: "/images/cards/pecharunt.png", alt: "Pecharunt illustration rare Pokémon card", label: "binder-pecharunt" },
     { src: "/images/cards/gyarados-ex.png", alt: "Gyarados EX full-art Pokémon card", label: "binder-gyarados-ex" },
+    { src: "/images/cards/vibrava.png", alt: "Vibrava illustration rare Pokémon card", label: "binder-vibrava" },
     { src: "/images/cards/victini.png", alt: "Japanese Victini full-art Pokémon card", label: "binder-victini" },
     { src: "/images/cards/bulbasaur.png", alt: "Bulbasaur Pokémon card", label: "binder-bulbasaur" },
     { src: "/images/cards/ceruledge.png", alt: "Shiny Ceruledge Pokémon card", label: "binder-ceruledge" },
+    { src: "/images/cards/kyogre-lv47.png", alt: "Kyogre LV.47 Pokémon card", label: "binder-kyogre-lv47" },
     { src: "/images/cards/flapple.png", alt: "Flapple illustration rare Pokémon card", label: "binder-flapple" },
     { src: "/images/cards/quaxwell.png", alt: "Quaxwell Pokémon card", label: "binder-quaxwell" },
     { src: "/images/cards/ogerpon.png", alt: "Japanese Ogerpon Pokémon card", label: "binder-ogerpon" },
+    { src: "/images/cards/fezandipiti.png", alt: "Fezandipiti full-art Pokémon card", label: "binder-fezandipiti" },
   ] satisfies ImageSlot[],
-  /** Supplied but not placed yet. */
-  spareKyogreLv47: { src: "/images/cards/kyogre-lv47.png", alt: "Kyogre LV.47 Pokémon card", label: "spare-kyogre-lv47" },
 
   categoryVintage: slot("category-vintage", "Vintage Pokémon cards from early sets"),
   categoryModern: slot("category-modern", "Modern Pokémon cards and sought-after pulls"),

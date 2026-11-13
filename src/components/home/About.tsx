@@ -6,7 +6,7 @@ export function About() {
   return (
     <section id="about" aria-labelledby="about-title" className="relative bg-white py-20 text-ink md:py-28">
       <div className="container-grail grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
-        <div className="lg:col-span-6">
+        <div className="lg:col-span-5">
           <SectionLabel index="01" className="!text-ink/60 [&_span:first-child]:!text-ink [&_span:nth-child(2)]:!bg-ink/30">
             About Grailz Co
           </SectionLabel>
@@ -24,10 +24,10 @@ export function About() {
         </div>
 
         {/* Binder page in a glass display case */}
-        <Reveal y={50} className="lg:col-span-6">
-          <div className="hairline relative mx-auto w-full max-w-[min(26rem,52svh)] rounded-[1.5rem] bg-navy p-3.5 shadow-[0_40px_80px_-36px_rgb(0_14_40/0.6)] sm:p-5 lg:rotate-[1.5deg]">
+        <Reveal y={50} className="lg:col-span-7">
+          <div className="hairline relative mx-auto w-full max-w-[min(34rem,69svh)] rounded-[1.5rem] bg-navy p-3.5 shadow-[0_40px_80px_-36px_rgb(0_14_40/0.6)] sm:p-5 lg:rotate-[1.5deg]">
             <div className="relative">
-              <ul className="grid grid-cols-3 gap-2.5 sm:gap-3.5" aria-label="A page of cards from a collection">
+              <ul className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 sm:gap-3" aria-label="A page of cards from a collection">
                 {images.aboutBinder.map((card) => (
                   <li key={card.label} className="rounded-[0.7rem] bg-navy-900 p-1.5 ring-1 ring-inset ring-white/[0.06] sm:p-2">
                     <div className="relative aspect-[330/460] overflow-hidden rounded-[0.4rem]">
