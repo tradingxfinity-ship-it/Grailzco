@@ -1,6 +1,6 @@
+import Image from "next/image";
 import { ButtonLink } from "@/components/ui/Button";
 import { Reveal, SplitHeadline } from "@/components/ui/Reveal";
-import { CardArt } from "@/components/visuals/CardArt";
 import { images } from "@/content/images";
 
 type Props = {
@@ -10,6 +10,13 @@ type Props = {
   href?: string;
   id: string;
 };
+
+/** Position of each fanned card: left, centre (front), right. */
+const FAN = [
+  "absolute left-[14%] top-[10%] w-[12.5rem] -rotate-[16deg]",
+  "absolute left-1/2 top-0 z-10 w-[13rem] -translate-x-1/2",
+  "absolute right-[14%] top-[10%] w-[12.5rem] rotate-[16deg]",
+];
 
 /** Oversized closing conversion moment, shared by Home and How It Works. */
 export function FinalCta({ lines, body, cta, href = "/sell", id }: Props) {
@@ -21,15 +28,13 @@ export function FinalCta({ lines, body, cta, href = "/sell", id }: Props) {
       {/* Fanned cards behind the headline */}
       <div aria-hidden="true" className="pointer-events-none absolute left-1/2 top-1/2 hidden w-[44rem] -translate-x-1/2 -translate-y-[46%] opacity-[0.35] md:block">
         <div className="relative mx-auto h-[22rem] w-full">
-          <div className="absolute left-[14%] top-[10%] w-[13rem] -rotate-[16deg]">
-            <CardArt slot={images.ctaFanLeft} hue={-30} sizes="208px" />
-          </div>
-          <div className="absolute right-[14%] top-[10%] w-[13rem] rotate-[16deg]">
-            <CardArt slot={images.ctaFanRight} hue={30} sizes="208px" />
-          </div>
-          <div className="absolute left-1/2 top-0 w-[12rem] -translate-x-1/2">
-            <CardArt slot={images.ctaFanCenter} variant="slab" sizes="192px" />
-          </div>
+          {images.ctaFan.map((card, i) => (
+            <div key={card.label} className={FAN[i]}>
+              <div className="relative aspect-[330/460] overflow-hidden rounded-[0.8rem] shadow-[0_30px_60px_-20px_rgb(0_0_0/0.8)] ring-1 ring-white/10">
+                <Image src={card.src} alt="" fill sizes="208px" className="object-cover" />
+              </div>
+            </div>
+          ))}
         </div>
       </div>
 

@@ -54,8 +54,12 @@ export const images = {
   whatnotFeature: slot("whatnot-feature", "Grailz Co on Whatnot"),
 
   ctaFanLeft: slot("cta-fan-left", "A holographic trading card"),
-  ctaFanCenter: slot("cta-fan-center", "A graded trading card in a slab"),
-  ctaFanRight: slot("cta-fan-right", "A holographic trading card"),
+  /** Faded fan behind the closing CTA: left, centre, right. */
+  ctaFan: [
+    { src: "/images/cards/ceruledge.png", alt: "Shiny Ceruledge Pokémon card", label: "cta-ceruledge" },
+    { src: "/images/cards/mega-charizard-x-ex.png", alt: "Mega Charizard X ex Pokémon card", label: "cta-mega-charizard-x" },
+    { src: "/images/cards/gyarados-ex.png", alt: "Gyarados EX full-art Pokémon card", label: "cta-gyarados-ex" },
+  ] satisfies ImageSlot[],
 
   sellHeroA: slot("sell-hero-a", "A holographic trading card"),
   sellHeroB: slot("sell-hero-b", "A graded trading card in a slab"),
