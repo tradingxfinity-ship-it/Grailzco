@@ -163,6 +163,15 @@ body {
       linear-gradient(to bottom, rgb(159 176 203 / 0.06) 1px, transparent 1px);
     background-size: 72px 72px;
   }
+
+  /* Same 72px grid, pushed far back: hairline, low-alpha blue, slightly soft */
+  .grid-distant {
+    background-image:
+      linear-gradient(to right, rgb(64 104 168 / 0.07) 0.6px, transparent 0.6px),
+      linear-gradient(to bottom, rgb(64 104 168 / 0.07) 0.6px, transparent 0.6px);
+    background-size: 72px 72px;
+    filter: blur(0.35px);
+  }
 }
 
 /* Holographic foil — driven by --mx/--my (0–100) where pointer-aware */

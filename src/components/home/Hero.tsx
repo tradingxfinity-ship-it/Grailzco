@@ -12,7 +12,7 @@ export function Hero() {
     <section aria-labelledby="hero-title" className="grain relative -mt-[4.5rem] overflow-hidden pt-[4.5rem] md:-mt-20 md:pt-20">
       <div
         aria-hidden="true"
-        className="grid-faint absolute inset-0 [mask-image:radial-gradient(ellipse_at_50%_55%,black_15%,transparent_65%)]"
+        className="grid-distant absolute inset-0 [mask-image:radial-gradient(ellipse_75%_65%_at_50%_50%,rgb(0_0_0/0.15)_0%,rgb(0_0_0/0.25)_30%,rgb(0_0_0/0.75)_55%,transparent_85%)]"
       />
 
       <div className="container-grail relative flex min-h-[calc(100svh-4.5rem)] flex-col items-center justify-center py-[min(2.5rem,4svh)] text-center md:min-h-[calc(100svh-5rem)]">
