@@ -6,7 +6,6 @@ import { CardArt } from "@/components/visuals/CardArt";
 import { EASE, Reveal, SectionLabel, SplitHeadline } from "@/components/ui/Reveal";
 import { sellingTips } from "@/content/copy";
 import { images } from "@/content/images";
-import { LIMITS } from "@/lib/submission";
 
 export function SellHero() {
   return (
@@ -76,37 +75,23 @@ const nextSteps = [
   { icon: MessageCircle, title: "We reach out", body: "If there's an offer or we need more details, we'll contact you." },
 ];
 
+/** Compact "what happens next" shown under the live preview. */
 export function SellAside() {
   return (
-    <aside aria-label="About your submission" className="space-y-6 lg:sticky lg:top-28">
-      <div className="hairline rounded-[1.5rem] bg-navy-800/70 p-6 sm:p-8">
-        <p className="eyebrow">What happens next</p>
-        <ol className="mt-6 space-y-6">
-          {nextSteps.map(({ icon: Icon, title, body }, i) => (
-            <li key={title} className="relative flex gap-4">
-              {i < nextSteps.length - 1 && <span aria-hidden="true" className="absolute left-5 top-11 h-[calc(100%-1.25rem)] w-px bg-line" />}
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-full border border-mint/40 text-mint">
-                <Icon aria-hidden="true" className="size-[1.1rem]" />
-              </span>
-              <div>
-                <p className="font-semibold text-white">{title}</p>
-                <p className="mt-1 text-sm leading-relaxed text-mist">{body}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      </div>
-      <div className="rounded-[1.5rem] border border-line p-6 sm:p-8">
-        <p className="eyebrow">Photo guidance</p>
-        <ul className="mt-4 space-y-2.5 text-sm leading-relaxed text-mist">
-          <li>JPG, PNG or WebP, up to {LIMITS.maxSourceFileMB} MB each.</li>
-          <li>
-            Up to {LIMITS.maxImagesPerCard} photos per card and {LIMITS.maxImagesTotal} per submission.
+    <aside aria-label="What happens next" className="rounded-[1.5rem] border border-line p-6">
+      <p className="eyebrow">What happens next</p>
+      <ol className="mt-4 space-y-3">
+        {nextSteps.map(({ icon: Icon, title, body }) => (
+          <li key={title} className="flex items-start gap-3">
+            <span className="flex size-8 shrink-0 items-center justify-center rounded-full border border-mint/40 text-mint">
+              <Icon aria-hidden="true" className="size-3.5" />
+            </span>
+            <p className="pt-1 text-sm leading-snug text-mist">
+              <span className="font-semibold text-white">{title}.</span> {body}
+            </p>
           </li>
-          <li>Photos are resized in your browser for a faster, lighter upload.</li>
-          <li>On a phone? Choose from your library or take a photo directly.</li>
-        </ul>
-      </div>
+        ))}
+      </ol>
     </aside>
   );
 }

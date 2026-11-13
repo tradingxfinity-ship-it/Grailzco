@@ -15,13 +15,8 @@ export default function SellPage() {
     <>
       <SellHero />
       <section id="submit" aria-label="Submission form" className="relative pb-24 md:pb-32">
-        <div className="container-grail grid gap-12 lg:grid-cols-12 lg:gap-14">
-          <div className="lg:col-span-8">
-            <SubmissionForm />
-          </div>
-          <div className="lg:col-span-4">
-            <SellAside />
-          </div>
+        <div className="container-grail">
+          <SubmissionForm aside={<SellAside />} />
         </div>
       </section>
       <SellingTips />
