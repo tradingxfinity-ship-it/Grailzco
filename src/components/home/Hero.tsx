@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowDown } from "lucide-react";
@@ -7,6 +8,19 @@ import { ButtonLink } from "@/components/ui/Button";
 import { EASE, SplitHeadline } from "@/components/ui/Reveal";
 import { HeroCards } from "@/components/visuals/HeroCards";
 import { Particles } from "@/components/visuals/Particles";
+
+/** Floor squares holding a faded logo: [column offset from centre, row from the horizon]. */
+const FLOOR_LOGOS: [number, number][] = [
+  [-6, 0],
+  [3, 0],
+  [-3, 1],
+  [7, 1],
+  [-8, 2],
+  [0, 2],
+  [5, 2],
+  [-5, 3],
+  [5, 3],
+];
 
 export function Hero() {
   return (
@@ -16,7 +30,24 @@ export function Hero() {
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 bottom-0 top-[52%] [perspective:420px] [perspective-origin:50%_0%] [mask-image:linear-gradient(to_bottom,transparent,black_35%),linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] [mask-composite:intersect] [-webkit-mask-composite:source-in]"
       >
-        <div className="grid-floor absolute -left-1/2 -right-1/2 top-0 h-[300%] origin-top [transform:rotateX(64deg)]" />
+        <div className="grid-floor absolute -left-1/2 -right-1/2 top-0 h-[300%] origin-top [transform:rotateX(64deg)]">
+          {/* Faint badges set into a few floor squares (column from centre, row from horizon) */}
+          {FLOOR_LOGOS.map(([col, row], i) => (
+            <Image
+              key={`${col}-${row}`}
+              src="/brand/grailzco-logo.png"
+              alt=""
+              width={40}
+              height={40}
+              className="floor-logo absolute size-10"
+              style={{
+                left: `calc(50% + ${col * 72 - 20}px)`,
+                top: `${row * 72 + 16}px`,
+                animationDelay: `${i * -1.7}s`,
+              }}
+            />
+          ))}
+        </div>
       </div>
 
       <Particles />
