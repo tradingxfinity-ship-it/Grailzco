@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { CardArt } from "@/components/visuals/CardArt";
 import { EASE, Reveal } from "@/components/ui/Reveal";
@@ -13,9 +13,24 @@ const HUE: Record<string, number> = { vintage: -25, modern: 30, graded: 0, lots:
 export function Categories() {
   const [active, setActive] = useState(0);
   const current = categories[active];
+  const itemRefs = useRef<(HTMLLIElement | null)[]>([]);
+
+  // The row crossing the middle of the viewport becomes active.
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.index));
+        }
+      },
+      { rootMargin: "-50% 0px -50% 0px" },
+    );
+    itemRefs.current.forEach((el) => el && observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
 
   return (
-    <section aria-labelledby="look-title" className="relative overflow-hidden bg-navy-900 py-24 md:py-36">
+    <section aria-labelledby="look-title" className="relative overflow-clip bg-navy-900 py-24 md:py-36">
       <div aria-hidden="true" className="absolute -left-40 top-1/3 size-[36rem] rounded-full bg-mint/[0.06] blur-[120px]" />
       <div className="container-grail relative">
         <h2 id="look-title" className="sr-only">
@@ -25,16 +40,16 @@ export function Categories() {
         <div className="grid gap-10 lg:grid-cols-12 lg:gap-12">
           {/* Sticky showcase (desktop) */}
           <div className="hidden lg:col-span-5 lg:block">
-            <div className="sticky top-28">
+            <div className="sticky top-[max(7rem,calc(50vh-15rem))]">
               <div className="relative mx-auto aspect-[4/5] max-w-[26rem]">
                 <div aria-hidden="true" className="absolute inset-[8%] rounded-[2rem] border border-line" />
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={current.key}
-                    initial={{ opacity: 0, y: 30, rotate: -3 }}
-                    animate={{ opacity: 1, y: 0, rotate: 0 }}
-                    exit={{ opacity: 0, y: -20, rotate: 2 }}
-                    transition={{ duration: 0.6, ease: EASE }}
+                    initial={{ opacity: 0, scale: 0.97 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.97 }}
+                    transition={{ duration: 0.35, ease: EASE }}
                     className="absolute inset-0 flex items-center justify-center"
                   >
                     <CardArt
@@ -55,22 +70,24 @@ export function Categories() {
 
           <ol className="lg:col-span-7">
             {categories.map((c, i) => (
-              <Reveal as="li" key={c.key} delay={i * 0.06}>
-                <button
-                  type="button"
-                  onMouseEnter={() => setActive(i)}
-                  onFocus={() => setActive(i)}
-                  onClick={() => setActive(i)}
-                  aria-pressed={active === i}
+              <li
+                key={c.key}
+                ref={(el) => {
+                  itemRefs.current[i] = el;
+                }}
+                data-index={i}
+              >
+                <Reveal
+                  delay={i * 0.06}
                   className={cn(
-                    "group grid w-full grid-cols-[auto_1fr] gap-x-5 gap-y-3 border-t border-line py-8 text-left transition-colors md:grid-cols-[4rem_1fr_7rem] md:gap-x-8 md:py-10",
+                    "grid w-full grid-cols-[auto_1fr] gap-x-5 gap-y-3 border-t border-line py-8 md:grid-cols-[4rem_1fr_7rem] md:gap-x-8 md:py-10 lg:py-16",
                     i === categories.length - 1 && "border-b",
                   )}
                 >
                   <span
                     className={cn(
-                      "pt-2 font-mono text-sm transition-colors",
-                      active === i ? "text-mint" : "text-mint lg:text-haze lg:group-hover:text-mist",
+                      "pt-2 font-mono text-sm transition-colors duration-500",
+                      active === i ? "text-mint" : "text-mint lg:text-haze",
                     )}
                   >
                     {c.index}
@@ -78,16 +95,16 @@ export function Categories() {
                   <span>
                     <span
                       className={cn(
-                        "block font-display text-[2rem] font-semibold leading-none tracking-[-0.035em] transition-colors sm:text-[2.6rem] md:text-[3.25rem]",
-                        active === i ? "text-white" : "text-white lg:text-white/45 lg:group-hover:text-white/80",
+                        "block font-display text-[2rem] font-semibold leading-none tracking-[-0.035em] transition-colors duration-500 sm:text-[2.6rem] md:text-[3.25rem]",
+                        active === i ? "text-white" : "text-white lg:text-white/30",
                       )}
                     >
                       {c.title}
                     </span>
                     <span
                       className={cn(
-                        "mt-4 block max-w-lg text-[0.98rem] leading-relaxed transition-colors",
-                        active === i ? "text-mist" : "text-mist lg:text-haze",
+                        "mt-4 block max-w-lg text-[0.98rem] leading-relaxed transition-colors duration-500",
+                        active === i ? "text-mist" : "text-mist lg:text-haze/60",
                       )}
                     >
                       {c.body}
@@ -111,8 +128,8 @@ export function Categories() {
                       active === i ? "w-full" : "w-0",
                     )}
                   />
-                </button>
-              </Reveal>
+                </Reveal>
+              </li>
             ))}
           </ol>
         </div>
