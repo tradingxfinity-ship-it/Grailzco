@@ -46,10 +46,19 @@ export const images = {
     { src: "/images/cards/fezandipiti.png", alt: "Fezandipiti full-art Pokémon card", label: "binder-fezandipiti" },
   ] satisfies ImageSlot[],
 
-  categoryVintage: slot("category-vintage", "Vintage Pokémon cards from early sets"),
-  categoryModern: slot("category-modern", "Modern Pokémon cards and sought-after pulls"),
-  categoryGraded: slot("category-graded", "A Pokémon card inside a grading slab"),
-  categoryLots: slot("category-lots", "A stack of trading cards submitted as a collection"),
+  /** "What we look for" showcase, keyed by category. Lots shows all three as a fan. */
+  categoryCards: {
+    vintage: [{ src: "/images/cards/machamp-1st-edition.png", alt: "1st Edition Base Set Machamp holo Pokémon card", label: "category-machamp" }],
+    modern: [{ src: "/images/cards/greninja-ex.png", alt: "Greninja ex Pokémon card", label: "category-greninja-ex" }],
+    graded: [
+      { src: "/images/cards/pikachu-movie-promo-psa-8.png", alt: "1999 Pikachu movie promo graded PSA 8 in its slab", label: "category-pikachu-psa-8" },
+    ],
+    lots: [
+      { src: "/images/cards/bulbasaur.png", alt: "Bulbasaur Pokémon card", label: "category-lots-bulbasaur" },
+      { src: "/images/cards/charizard-ex.png", alt: "Charizard ex Pokémon card", label: "category-lots-charizard-ex" },
+      { src: "/images/cards/kyogre-lv47.png", alt: "Kyogre LV.47 Pokémon card", label: "category-lots-kyogre" },
+    ],
+  } satisfies Record<string, ImageSlot[]>,
 
   /** Whatnot panel fan: left, centre (front), right. */
   whatnotFan: [

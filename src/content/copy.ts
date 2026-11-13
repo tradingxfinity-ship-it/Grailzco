@@ -12,8 +12,6 @@ export const categories = [
     short: "Vintage",
     body: "Classic cards and early collectible releases — the ones that started it all and still turn heads.",
     meta: "WOTC era · Early sets · Holos",
-    image: "categoryVintage",
-    variant: "raw",
   },
   {
     key: "modern",
@@ -22,8 +20,6 @@ export const categories = [
     short: "Modern",
     body: "Contemporary sets, sought-after pulls and modern favourites, from alt arts to illustration rares.",
     meta: "Current sets · Chase cards · Full arts",
-    image: "categoryModern",
-    variant: "raw",
   },
   {
     key: "graded",
@@ -32,8 +28,6 @@ export const categories = [
     short: "Graded",
     body: "Professionally authenticated or graded collectibles. Tell us the grader and grade, and include clear slab photos.",
     meta: "PSA · BGS · CGC · Others",
-    image: "categoryGraded",
-    variant: "slab",
   },
   {
     key: "lots",
@@ -42,8 +36,6 @@ export const categories = [
     short: "Lots",
     body: "Multiple cards submitted together. Add each standout card, or describe the collection as a whole.",
     meta: "Binders · Bulk · Mixed lots",
-    image: "categoryLots",
-    variant: "stack",
   },
 ] as const;
 

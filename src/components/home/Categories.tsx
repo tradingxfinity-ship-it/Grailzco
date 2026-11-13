@@ -1,14 +1,53 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { CardArt } from "@/components/visuals/CardArt";
 import { EASE, Reveal } from "@/components/ui/Reveal";
 import { categories } from "@/content/copy";
 import { images } from "@/content/images";
 import { cn } from "@/lib/cn";
 
-const HUE: Record<string, number> = { vintage: -25, modern: 30, graded: 0, lots: 15 };
+type CategoryKey = (typeof categories)[number]["key"];
+
+/** Fan positions for the Lots category: left, centre (front), right. */
+const FAN = [
+  "absolute left-0 top-[8%] w-[44%] -rotate-[12deg]",
+  "absolute left-1/2 top-0 z-10 w-[46%] -translate-x-1/2",
+  "absolute right-0 top-[8%] w-[44%] rotate-[12deg]",
+];
+
+/** The card(s) shown for a category: one card, a slab, or a three-card fan for lots. */
+function CategoryVisual({ k, size }: { k: CategoryKey; size: "lg" | "sm" }) {
+  const cards = images.categoryCards[k];
+  const lg = size === "lg";
+  const sizes = lg ? "(min-width: 1024px) 16vw, 0px" : "96px";
+  const card = (c: (typeof cards)[number], slab = false) => (
+    <div
+      className={cn(
+        "relative overflow-hidden shadow-[0_24px_50px_-18px_rgb(0_0_0/0.8)] ring-1 ring-white/10",
+        slab ? "aspect-[425/721] rounded-[0.5rem]" : "aspect-[330/460]",
+        !slab && (lg ? "rounded-[0.8rem]" : "rounded-[0.35rem]"),
+      )}
+    >
+      <Image src={c.src} alt={c.alt} fill sizes={sizes} className="object-cover" />
+    </div>
+  );
+
+  if (k === "lots") {
+    return (
+      <div className={cn("relative", lg ? "aspect-[1/0.74] w-[84%]" : "h-[5.5rem] w-28")}>
+        {cards.map((c, i) => (
+          <div key={c.label} className={FAN[i]}>
+            {card(c)}
+          </div>
+        ))}
+      </div>
+    );
+  }
+  if (k === "graded") return <div className={lg ? "w-[46%]" : "w-[3.6rem]"}>{card(cards[0], true)}</div>;
+  return <div className={lg ? "w-[58%]" : "w-20"}>{card(cards[0])}</div>;
+}
 
 export function Categories() {
   const [active, setActive] = useState(0);
@@ -52,13 +91,7 @@ export function Categories() {
                     transition={{ duration: 0.35, ease: EASE }}
                     className="absolute inset-0 flex items-center justify-center"
                   >
-                    <CardArt
-                      slot={images[current.image]}
-                      variant={current.variant}
-                      hue={HUE[current.key]}
-                      className={current.variant === "slab" ? "w-[56%]" : "w-[62%]"}
-                      sizes="(min-width: 1024px) 18vw, 0px"
-                    />
+                    <CategoryVisual k={current.key} size="lg" />
                   </motion.div>
                 </AnimatePresence>
                 <p className="absolute bottom-0 left-0 right-0 text-center font-mono text-[0.68rem] uppercase tracking-[0.14em] text-haze">
@@ -112,13 +145,7 @@ export function Categories() {
                   </span>
                   {/* Inline thumbnail on small screens / right-hand thumbnail on md */}
                   <span className="col-span-2 mt-2 flex items-center gap-4 lg:hidden md:col-span-1 md:mt-0 md:justify-end">
-                    <CardArt
-                      slot={images[c.image]}
-                      variant={c.variant}
-                      hue={HUE[c.key]}
-                      className={c.variant === "slab" ? "w-[4.5rem]" : "w-20"}
-                      sizes="96px"
-                    />
+                    <CategoryVisual k={c.key} size="sm" />
                     <span className="font-mono text-[0.65rem] uppercase tracking-[0.12em] text-haze md:hidden">{c.meta}</span>
                   </span>
                   <span
