@@ -4,6 +4,7 @@ import { useId, useRef, useState } from "react";
 import { AnimatePresence, motion, useScroll, useSpring } from "motion/react";
 import { Check, Plus } from "lucide-react";
 import { CardArt } from "@/components/visuals/CardArt";
+import { ConversationVisual, ReviewVisual, ShareVisual } from "@/components/how/StageVisuals";
 import { EASE, Reveal, SectionLabel, SplitHeadline } from "@/components/ui/Reveal";
 import { faqs, goodSubmission, journey } from "@/content/copy";
 import { images } from "@/content/images";
@@ -68,6 +69,8 @@ export function HowHero() {
   );
 }
 
+const STAGE_VISUALS = [ShareVisual, ReviewVisual, ConversationVisual];
+
 export function Journey() {
   const ref = useRef<HTMLOListElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start 70%", "end 60%"] });
@@ -90,6 +93,7 @@ export function Journey() {
           />
           {journey.map((s, i) => {
             const flip = i % 2 === 1;
+            const Visual = STAGE_VISUALS[i];
             return (
               <li key={s.index} className="relative grid gap-10 pb-24 pl-14 last:pb-0 md:grid-cols-2 md:gap-20 md:pl-0">
                 <span className="absolute left-0 top-1 z-10 flex size-[2.3rem] items-center justify-center rounded-full border border-mint bg-navy-900 font-mono text-xs text-mint md:left-1/2 md:-translate-x-1/2">
@@ -113,15 +117,8 @@ export function Journey() {
                   </ul>
                 </Reveal>
                 <Reveal y={50} delay={0.1} className={cn("flex", flip ? "md:order-1 md:justify-end md:pr-4" : "md:pl-4")}>
-                  <div className="hairline relative w-full max-w-[22rem] rounded-[1.75rem] bg-navy-800/80 p-8 sm:p-10">
-                    <CardArt
-                      slot={images[s.image]}
-                      variant={s.variant}
-                      hue={[-25, 10, 35][i]}
-                      className={cn("mx-auto", s.variant === "slab" ? "w-[62%]" : "w-[70%]", flip ? "-rotate-3" : "rotate-3")}
-                      sizes="(min-width: 768px) 16vw, 50vw"
-                    />
-                    <p className="mt-6 text-center font-mono text-[0.65rem] uppercase tracking-[0.14em] text-haze">Stage {s.index}</p>
+                  <div className="hairline relative w-full max-w-[24rem] rounded-[1.75rem] bg-navy-800/80 p-3 shadow-[0_40px_80px_-40px_rgb(0_0_0/0.9)] sm:p-4">
+                    <Visual />
                   </div>
                 </Reveal>
               </li>
