@@ -164,13 +164,13 @@ body {
     background-size: 72px 72px;
   }
 
-  /* Same 72px grid, pushed far back: hairline, low-alpha blue, slightly soft */
-  .grid-distant {
+  /* Same 72px grid, laid flat as a floor plane (see Hero) */
+  .grid-floor {
     background-image:
-      linear-gradient(to right, rgb(64 104 168 / 0.07) 0.6px, transparent 0.6px),
-      linear-gradient(to bottom, rgb(64 104 168 / 0.07) 0.6px, transparent 0.6px);
+      linear-gradient(to right, rgb(96 146 214 / 0.28) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(96 146 214 / 0.28) 1px, transparent 1px);
     background-size: 72px 72px;
-    filter: blur(0.35px);
+    background-position: center top;
   }
 }
 

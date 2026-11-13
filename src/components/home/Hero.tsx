@@ -10,10 +10,13 @@ import { HeroCards } from "@/components/visuals/HeroCards";
 export function Hero() {
   return (
     <section aria-labelledby="hero-title" className="grain relative -mt-[4.5rem] overflow-hidden pt-[4.5rem] md:-mt-20 md:pt-20">
+      {/* Grid floor: the 72px grid tilted back in perspective, horizon behind the cards */}
       <div
         aria-hidden="true"
-        className="grid-distant absolute inset-0 [mask-image:radial-gradient(ellipse_75%_65%_at_50%_50%,rgb(0_0_0/0.15)_0%,rgb(0_0_0/0.25)_30%,rgb(0_0_0/0.75)_55%,transparent_85%)]"
-      />
+        className="pointer-events-none absolute inset-x-0 bottom-0 top-[52%] [perspective:420px] [perspective-origin:50%_0%] [mask-image:linear-gradient(to_bottom,transparent,black_35%),linear-gradient(to_right,transparent,black_20%,black_80%,transparent)] [mask-composite:intersect] [-webkit-mask-composite:source-in]"
+      >
+        <div className="grid-floor absolute -left-1/2 -right-1/2 top-0 h-[300%] origin-top [transform:rotateX(64deg)]" />
+      </div>
 
       <div className="container-grail relative flex min-h-[calc(100svh-4.5rem)] flex-col items-center justify-center py-[min(2.5rem,4svh)] text-center md:min-h-[calc(100svh-5rem)]">
         <SplitHeadline
