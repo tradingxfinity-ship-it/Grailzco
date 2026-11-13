@@ -1,27 +1,16 @@
-import { Reveal, SectionLabel, SplitHeadline } from "@/components/ui/Reveal";
+import { Reveal } from "@/components/ui/Reveal";
 import { pillars } from "@/content/copy";
 import { cn } from "@/lib/cn";
 
 export function Why() {
   return (
-    <section aria-labelledby="why-title" className="relative py-24 md:py-36">
+    <section aria-labelledby="why-title" className="relative py-16 md:py-24">
       <div className="container-grail">
-        <div className="grid gap-10 lg:grid-cols-12">
-          <div className="lg:col-span-5">
-            <SectionLabel index="02">Why Grailz Co</SectionLabel>
-          </div>
-          <div className="lg:col-span-7">
-            <SplitHeadline id="why-title" lines={["Made for Collectors.", "Built on *Trust.*"]} className="display-lg" />
-            <Reveal delay={0.1}>
-              <p className="lede mt-8 max-w-xl">
-                Selling a card you care about should feel straightforward. We keep the process clear, personal and
-                honest — from the first form field to the moment we get in touch.
-              </p>
-            </Reveal>
-          </div>
-        </div>
+        <h2 id="why-title" className="sr-only">
+          Why Grailz Co
+        </h2>
 
-        <div className="mt-16 grid gap-px overflow-hidden rounded-[1.75rem] bg-line sm:grid-cols-2 md:mt-24">
+        <div className="grid gap-px overflow-hidden rounded-[1.75rem] bg-line sm:grid-cols-2">
           {pillars.map((p, i) => (
             <Reveal
               key={p.index}
