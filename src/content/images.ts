@@ -75,12 +75,6 @@ export const images = {
   ] satisfies ImageSlot[],
 
 
-  howHero: slot("how-hero", "A graded Pokémon card under studio lighting"),
-  howStage1: slot("how-stage-1", "A collector photographing a trading card"),
-  howStage2: slot("how-stage-2", "A trading card being examined closely"),
-  howStage3: slot("how-stage-3", "A graded trading card ready for the next step"),
-  guideFront: slot("guide-front", "Example photo of the front of a trading card"),
-  guideBack: slot("guide-back", "Example photo of the back of a trading card"),
 
   og: slot("og-image", "Grailz Co — Your Cards. Our Passion."),
 } as const;

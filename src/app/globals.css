@@ -193,36 +193,3 @@ body {
     animation: none;
   }
 }
-
-/* Holographic foil — driven by --mx/--my (0–100) where pointer-aware */
-.holo-foil {
-  background:
-    radial-gradient(
-      circle at calc(var(--mx, 50) * 1%) calc(var(--my, 50) * 1%),
-      rgb(255 255 255 / 0.35),
-      transparent 38%
-    ),
-    conic-gradient(
-      from calc(var(--mx, 50) * 1.8deg) at 50% 55%,
-      #0b2a5c,
-      #1a5e8a,
-      #37f5c7,
-      #2a3f8f,
-      #7a6cf0,
-      #0b2a5c,
-      #37f5c7aa,
-      #0b2a5c
-    );
-  background-blend-mode: soft-light, normal;
-}
-
-.holo-sheen {
-  background: linear-gradient(
-    115deg,
-    transparent calc(var(--mx, 50) * 1% - 30%),
-    rgb(255 255 255 / 0.16) calc(var(--mx, 50) * 1% - 8%),
-    rgb(55 245 199 / 0.18) calc(var(--mx, 50) * 1%),
-    transparent calc(var(--mx, 50) * 1% + 22%)
-  );
-  mix-blend-mode: screen;
-}

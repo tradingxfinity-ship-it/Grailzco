@@ -16,7 +16,7 @@ export const siteConfig = {
   contactEmail: process.env.NEXT_PUBLIC_CONTACT_EMAIL ?? "",
   nav: [
     { label: "Home", href: "/" },
-    { label: "How It Works", href: "/how-it-works" },
+    { label: "How It Works", href: "/#how-it-works" },
   ],
   sellHref: "/sell",
 } as const;

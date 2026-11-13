@@ -8,7 +8,7 @@ export function Footer() {
   const links = [
     { label: "Home", href: "/" },
     { label: "Sell Your Cards", href: "/sell" },
-    { label: "How It Works", href: "/how-it-works" },
+    { label: "How It Works", href: "/#how-it-works" },
   ];
 
   return (
