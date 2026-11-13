@@ -51,9 +51,13 @@ export const images = {
   categoryGraded: slot("category-graded", "A Pokémon card inside a grading slab"),
   categoryLots: slot("category-lots", "A stack of trading cards submitted as a collection"),
 
-  whatnotFeature: slot("whatnot-feature", "Grailz Co on Whatnot"),
+  /** Whatnot panel fan: left, centre (front), right. */
+  whatnotFan: [
+    { src: "/images/cards/victini.png", alt: "Japanese Victini full-art Pokémon card", label: "whatnot-victini" },
+    { src: "/images/cards/whatnot-card.png", alt: "Whatnot logo card", label: "whatnot-card" },
+    { src: "/images/cards/quaxwell.png", alt: "Quaxwell Pokémon card", label: "whatnot-quaxwell" },
+  ] satisfies ImageSlot[],
 
-  ctaFanLeft: slot("cta-fan-left", "A holographic trading card"),
   /** Faded fan behind the closing CTA: left, centre, right. */
   ctaFan: [
     { src: "/images/cards/ceruledge.png", alt: "Shiny Ceruledge Pokémon card", label: "cta-ceruledge" },
