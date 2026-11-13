@@ -6,6 +6,7 @@ import { ArrowDown } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 import { EASE, SplitHeadline } from "@/components/ui/Reveal";
 import { HeroCards } from "@/components/visuals/HeroCards";
+import { Particles } from "@/components/visuals/Particles";
 
 export function Hero() {
   return (
@@ -17,6 +18,8 @@ export function Hero() {
       >
         <div className="grid-floor absolute -left-1/2 -right-1/2 top-0 h-[300%] origin-top [transform:rotateX(64deg)]" />
       </div>
+
+      <Particles />
 
       <div className="container-grail relative flex min-h-[calc(100svh-4.5rem)] flex-col items-center justify-center py-[min(2.5rem,4svh)] text-center md:min-h-[calc(100svh-5rem)]">
         <SplitHeadline
