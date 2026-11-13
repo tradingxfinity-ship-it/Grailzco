@@ -74,8 +74,6 @@ export const images = {
     { src: "/images/cards/gyarados-ex.png", alt: "Gyarados EX full-art Pokémon card", label: "cta-gyarados-ex" },
   ] satisfies ImageSlot[],
 
-  sellHeroA: slot("sell-hero-a", "A holographic trading card"),
-  sellHeroB: slot("sell-hero-b", "A graded trading card in a slab"),
 
   howHero: slot("how-hero", "A graded Pokémon card under studio lighting"),
   howStage1: slot("how-stage-1", "A collector photographing a trading card"),

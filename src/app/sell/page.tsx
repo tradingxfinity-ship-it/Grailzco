@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { SubmissionForm } from "@/components/sell/SubmissionForm";
-import { Reassurance, SellAside, SellHero, SellingTips } from "@/components/sell/SellSections";
+import { Reassurance, SellAside, SellingTips } from "@/components/sell/SellSections";
 
 export const metadata: Metadata = {
   title: "Sell Your Cards",
@@ -13,9 +13,11 @@ export const metadata: Metadata = {
 export default function SellPage() {
   return (
     <>
-      <SellHero />
-      <section id="submit" aria-label="Submission form" className="relative pb-24 md:pb-32">
+      <section id="submit" aria-labelledby="sell-title" className="relative pb-24 pt-10 md:pb-32 md:pt-14">
         <div className="container-grail">
+          <h1 id="sell-title" className="sr-only">
+            Sell your cards to Grailz Co
+          </h1>
           <SubmissionForm aside={<SellAside />} />
         </div>
       </section>

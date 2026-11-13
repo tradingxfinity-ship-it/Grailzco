@@ -198,7 +198,7 @@ export function LivePreview({ cards, activeIndex, onSelect, compact }: Props) {
           <span className={doneCount === 4 ? "text-mint" : ""}>{doneCount}/4</span>
         </div>
         <div className="mt-2 h-1 overflow-hidden rounded-full bg-white/10">
-          <motion.div className="h-full bg-mint" animate={{ width: `${(doneCount / 4) * 100}%` }} transition={{ duration: 0.5, ease: EASE }} />
+          <motion.div className="h-full bg-mint" initial={false} animate={{ width: `${(doneCount / 4) * 100}%` }} transition={{ duration: 0.5, ease: EASE }} />
         </div>
         <ul className="mt-3 grid grid-cols-2 gap-2">
           {checks.map((c) => (
