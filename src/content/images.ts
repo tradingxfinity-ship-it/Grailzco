@@ -20,9 +20,15 @@ export type ImageSlot = {
 const slot = (label: string, alt: string): ImageSlot => ({ src: null, alt, label });
 
 export const images = {
-  heroPrimary: slot("hero-primary", "A professionally graded holographic Pokémon card in a protective slab"),
-  heroLeft: slot("hero-left", "A vintage holographic Pokémon card"),
-  heroRight: slot("hero-right", "A modern full-art Pokémon card"),
+  /** Hero card fan, left to right. Files supplied by Grailz Co (330×460). */
+  heroFan: [
+    { src: "/images/cards/pikachu.png", alt: "Pikachu Pokémon card", label: "hero-pikachu" },
+    { src: "/images/cards/kyogre.png", alt: "Primal Kyogre full-art Pokémon card", label: "hero-kyogre" },
+    { src: "/images/cards/fezandipiti.png", alt: "Fezandipiti full-art Pokémon card", label: "hero-fezandipiti" },
+    { src: "/images/cards/charizard-ex.png", alt: "Charizard ex Pokémon card", label: "hero-charizard-ex" },
+    { src: "/images/cards/wailord.png", alt: "Wailord Pokémon card", label: "hero-wailord" },
+    { src: "/images/cards/vibrava.png", alt: "Vibrava illustration rare Pokémon card", label: "hero-vibrava" },
+  ] satisfies ImageSlot[],
 
   aboutBinder: Array.from({ length: 9 }, (_, i) =>
     slot(`about-binder-${i + 1}`, "A trading card from a carefully arranged collection"),

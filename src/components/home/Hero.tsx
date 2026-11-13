@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "motion/react";
 import { ArrowDown } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
@@ -8,85 +9,54 @@ import { HeroCards } from "@/components/visuals/HeroCards";
 
 export function Hero() {
   return (
-    <section
-      aria-labelledby="hero-title"
-      className="grain relative -mt-[4.5rem] overflow-hidden pt-[4.5rem] md:-mt-20 md:pt-20"
-    >
+    <section aria-labelledby="hero-title" className="grain relative -mt-[4.5rem] overflow-hidden pt-[4.5rem] md:-mt-20 md:pt-20">
       <div
         aria-hidden="true"
-        className="grid-faint absolute inset-0 [mask-image:radial-gradient(ellipse_at_70%_40%,black_20%,transparent_70%)]"
+        className="grid-faint absolute inset-0 [mask-image:radial-gradient(ellipse_at_50%_55%,black_15%,transparent_65%)]"
       />
 
-      <div className="container-grail relative grid items-center gap-10 pb-16 pt-10 md:pb-24 lg:min-h-[calc(100dvh-5rem)] lg:grid-cols-12 lg:gap-6 lg:pb-20 lg:pt-6">
-        <div className="relative z-10 lg:col-span-7">
-          <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, ease: EASE }}
-            className="eyebrow flex items-center gap-3"
-          >
-            <span className="inline-block size-1.5 rounded-full bg-mint" />
-            Pokémon &amp; collectible trading cards
-          </motion.p>
+      <div className="container-grail relative flex flex-col items-center pb-20 pt-8 text-center md:pb-28 md:pt-10">
+        <SplitHeadline
+          id="hero-title"
+          as="h1"
+          immediate
+          delay={0.1}
+          lines={["Your Cards.", "Our *Passion.*"]}
+          className="font-display text-[clamp(3rem,6.8vw,6.5rem)] font-bold leading-[0.95] tracking-[-0.045em] text-white"
+        />
 
-          <SplitHeadline
-            id="hero-title"
-            as="h1"
-            immediate
-            delay={0.1}
-            lines={["Your Cards.", "Our *Passion.*"]}
-            className="display-xl mt-6 text-white"
-          />
-
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.7, ease: EASE }}
-            className="lede mt-7 max-w-[37rem]"
-          >
-            Great collections deserve great opportunities. Discover a simpler way to sell your collectible trading cards
-            with Grailz Co.
-          </motion.p>
-
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.85, ease: EASE }}
-            className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center"
-          >
-            <ButtonLink href="/sell" size="lg">
-              Sell Your Cards
-            </ButtonLink>
-            <ButtonLink href="#about" size="lg" variant="outline" icon="none" className="gap-3">
-              Explore Grailz Co
-              <ArrowDown aria-hidden="true" className="size-4 transition-transform group-hover/btn:translate-y-0.5" />
-            </ButtonLink>
-          </motion.div>
-        </div>
-
-        <div className="relative lg:col-span-5 lg:-mr-10 xl:-mr-16">
+        <div className="mt-10 w-full sm:mt-12">
           <HeroCards />
         </div>
-      </div>
 
-      {/* Category strip */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 1.2 }}
-        className="relative border-y border-line"
-      >
-        <div className="container-grail">
-          <ul className="grid grid-cols-2 gap-px bg-line font-mono text-[0.7rem] uppercase tracking-[0.14em] text-mist md:grid-cols-4">
-            {["Vintage", "Modern", "Graded", "Collections & lots"].map((c, i) => (
-              <li key={c} className="flex items-center gap-3 bg-navy px-1 py-4 md:px-6 md:first:pl-0">
-                <span className="text-mint">0{i + 1}</span>
-                {c}
-              </li>
-            ))}
-          </ul>
-        </div>
-      </motion.div>
+        <motion.p
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 0.9, ease: EASE }}
+          className="lede mt-6 max-w-[34rem] sm:mt-8"
+        >
+          Great collections deserve great opportunities. Discover a simpler way to sell your collectible trading cards
+          with Grailz Co.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 1, delay: 1.05, ease: EASE }}
+          className="mt-8 flex flex-col items-center gap-5 sm:flex-row sm:gap-7"
+        >
+          <ButtonLink href="/sell" size="lg">
+            Sell Your Cards
+          </ButtonLink>
+          <Link
+            href="#about"
+            className="group inline-flex items-center gap-2 text-[0.98rem] font-semibold text-white/80 transition-colors hover:text-mint"
+          >
+            Explore Grailz Co
+            <ArrowDown aria-hidden="true" className="size-4 transition-transform group-hover:translate-y-0.5" />
+          </Link>
+        </motion.div>
+      </div>
     </section>
   );
 }
