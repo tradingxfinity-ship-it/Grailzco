@@ -63,7 +63,7 @@ export const images = {
   /** Whatnot panel fan: left, centre (front), right. */
   whatnotFan: [
     { src: "/images/cards/victini.png", alt: "Japanese Victini full-art Pokémon card", label: "whatnot-victini" },
-    { src: "/images/cards/whatnot-card.png", alt: "Whatnot logo card", label: "whatnot-card" },
+    { src: "/images/cards/whatnot-grailzco-card.png", alt: "Card with the Whatnot and Grailz Co logos", label: "whatnot-card" },
     { src: "/images/cards/quaxwell.png", alt: "Quaxwell Pokémon card", label: "whatnot-quaxwell" },
   ] satisfies ImageSlot[],
 
