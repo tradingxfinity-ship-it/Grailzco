@@ -70,7 +70,7 @@ export function Header() {
         className={cn(
           "sticky top-0 z-50 transition-[background-color,border-color,backdrop-filter] duration-500",
           scrolled || open
-            ? "border-b border-line bg-navy/80 backdrop-blur-xl"
+            ? "border-b border-line bg-navy/95 backdrop-blur-xl"
             : "border-b border-transparent bg-transparent",
         )}
       >
