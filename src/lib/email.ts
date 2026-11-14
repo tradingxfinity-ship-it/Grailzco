@@ -56,8 +56,17 @@ export function buildSubmissionEmail(p: SubmissionPayload, cards: CardWithPhotos
           ${row("Name", p.fullName)}
           ${row("Email", p.email)}
           ${row("Phone", p.phone || "Not provided")}
+          ${row("Prefers", [p.contactMethod, p.bestTime].filter(Boolean).join(" · "))}
         </table>
         <p style="margin:12px 0 0;font-size:13px;color:#6b7f9f">Reply to this email to respond to the collector directly.</p>
+      </td></tr>
+      <tr><td style="padding:16px 28px 4px">
+        <div style="font-family:monospace;font-size:12px;color:#6b7f9f;letter-spacing:1px">COLLECTION</div>
+        <table role="presentation" cellpadding="0" cellspacing="0" style="margin-top:8px">
+          ${row("Selling", p.collectionType)}
+          ${row("Era", p.era)}
+          ${row("Rough value", p.value)}
+        </table>
       </td></tr>
       <tr><td style="padding:16px 28px 4px">
         <div style="font-family:monospace;font-size:12px;color:#6b7f9f;letter-spacing:1px;margin-bottom:12px">CARDS</div>
@@ -79,6 +88,12 @@ export function buildSubmissionEmail(p: SubmissionPayload, cards: CardWithPhotos
     `Name: ${p.fullName}`,
     `Email: ${p.email}`,
     `Phone: ${p.phone || "Not provided"}`,
+    p.contactMethod || p.bestTime ? `Prefers: ${[p.contactMethod, p.bestTime].filter(Boolean).join(" · ")}` : null,
+    "",
+    "COLLECTION",
+    `Selling: ${p.collectionType}`,
+    `Era: ${p.era}`,
+    `Rough value: ${p.value}`,
     "",
     ...cards.flatMap((c, i) => [
       `CARD ${i + 1}: ${c.name}`,

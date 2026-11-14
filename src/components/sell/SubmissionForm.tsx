@@ -2,17 +2,23 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import { AlertCircle, Check, Loader2, Plus, Trash2 } from "lucide-react";
+import { AlertCircle, ArrowRight, Check, Loader2, Plus, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { EASE } from "@/components/ui/Reveal";
-import { FieldsetHeading, SelectField, TextArea, TextField } from "@/components/sell/Fields";
+import { SelectField, TextArea, TextField } from "@/components/sell/Fields";
 import { ImageDropzone, type UploadImage } from "@/components/sell/ImageDropzone";
 import { LivePreview, type PreviewCard } from "@/components/sell/LivePreview";
+import { ChipGroup, OptionList, StepHeader, StepTitle } from "@/components/sell/StepParts";
 import { SubmissionSuccess } from "@/components/sell/SubmissionSuccess";
 import { submissionNotice } from "@/content/copy";
 import { formatBytes, prepareImage } from "@/lib/images";
 import {
+  BEST_TIMES,
   CATEGORY_OPTIONS,
+  COLLECTION_TYPES,
+  CONTACT_METHODS,
+  ERA_OPTIONS,
+  VALUE_OPTIONS,
   CONDITION_OPTIONS,
   GRADING_OPTIONS,
   LIMITS,
@@ -32,6 +38,21 @@ const uid = () =>
   typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
 const newCard = (id = uid()): CardState => ({ ...emptyCard(), id, images: [], messages: [] });
 
+const STEPS = ["What you're selling", "Era", "Value", "Your cards", "Your details"] as const;
+const LAST = STEPS.length - 1;
+
+/** Which step an error key belongs to, so failed validation can jump back to it. */
+const stepOf = (key: string) =>
+  key === "collectionType"
+    ? 0
+    : key === "era"
+      ? 1
+      : key === "value"
+        ? 2
+        : key.startsWith("cards") || key === "images"
+          ? 3
+          : 4;
+
 /** The submission form plus, on desktop, a sticky live preview column (with `aside` below it). */
 export function SubmissionForm({ aside }: { aside?: React.ReactNode }) {
   const [fullName, setFullName] = useState("");
@@ -45,6 +66,13 @@ export function SubmissionForm({ aside }: { aside?: React.ReactNode }) {
   const [serverError, setServerError] = useState("");
   const [progress, setProgress] = useState(0);
   const [activeId, setActiveId] = useState("first"); // card shown in the live preview
+  const [step, setStep] = useState(0);
+  const [collectionType, setCollectionType] = useState("");
+  const [era, setEra] = useState("");
+  const [value, setValue] = useState("");
+  const [contactMethod, setContactMethod] = useState("");
+  const [bestTime, setBestTime] = useState("");
+  const advanceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const startedAt = useRef(0);
   const inFlight = useRef(false);
@@ -61,6 +89,23 @@ export function SubmissionForm({ aside }: { aside?: React.ReactNode }) {
   cardsRef.current = cards;
   useEffect(
     () => () => cardsRef.current.forEach((c) => c.images.forEach((i) => i.url && URL.revokeObjectURL(i.url))),
+    [],
+  );
+
+  // Move focus to the new step's question so keyboard and screen-reader users follow along.
+  const firstStep = useRef(true);
+  useEffect(() => {
+    if (firstStep.current) {
+      firstStep.current = false;
+      return;
+    }
+    formTop.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    requestAnimationFrame(() => document.getElementById(`step-${step}-title`)?.focus({ preventScroll: true }));
+  }, [step]);
+  useEffect(
+    () => () => {
+      if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    },
     [],
   );
 
@@ -206,6 +251,12 @@ export function SubmissionForm({ aside }: { aside?: React.ReactNode }) {
     setEmail("");
     setPhone("");
     setConsent(false);
+    setCollectionType("");
+    setEra("");
+    setValue("");
+    setContactMethod("");
+    setBestTime("");
+    setStep(0);
     const fresh = newCard();
     setCards([fresh]);
     setActiveId(fresh.id);
@@ -215,41 +266,73 @@ export function SubmissionForm({ aside }: { aside?: React.ReactNode }) {
     submissionId.current = uid();
     startedAt.current = Date.now();
     setStatus("idle");
-    requestAnimationFrame(() => {
-      formTop.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-      document.getElementById("fullName")?.focus({ preventScroll: true });
-    });
+    requestAnimationFrame(() => formTop.current?.scrollIntoView({ behavior: "smooth", block: "start" }));
+  };
+
+  /** Pick an answer on a question step, then glide to the next step. */
+  const pick = (setter: (v: string) => void, key: string) => (v: string) => {
+    setter(v);
+    clearError(key);
+    if (advanceTimer.current) clearTimeout(advanceTimer.current);
+    advanceTimer.current = setTimeout(() => setStep((s) => Math.min(s + 1, LAST)), 320);
+  };
+
+  const buildPayload = (): SubmissionPayload => ({
+    collectionType,
+    era,
+    value,
+    contactMethod,
+    bestTime,
+    fullName: fullName.trim(),
+    email: email.trim(),
+    phone: phone.trim(),
+    consent,
+    website,
+    elapsedMs: Date.now() - startedAt.current,
+    cards: cards.map(({ name, category, set, condition, grading, quantity, askingPrice, notes }) => ({
+      name: name.trim(),
+      category,
+      set: set.trim(),
+      condition,
+      grading,
+      quantity: quantity.trim(),
+      askingPrice: askingPrice.trim(),
+      notes: notes.trim(),
+    })),
+  });
+
+  /** All problems for the whole form (photos included). */
+  const findErrors = () => {
+    const found = validateSubmission(buildPayload());
+    if (allImages.length === 0) found.images = "Please add at least one photo so we can review your cards.";
+    if (processing) found.images = "Please wait a moment — your photos are still being prepared.";
+    return found;
+  };
+
+  /** Continue: only this step's problems block moving on. */
+  const next = () => {
+    const mine = Object.fromEntries(Object.entries(findErrors()).filter(([k]) => stepOf(k) === step));
+    setErrors(mine);
+    if (Object.keys(mine).length) return focusFirstError();
+    setStep((s) => Math.min(s + 1, LAST));
+  };
+  const back = () => {
+    setErrors({});
+    setServerError("");
+    setStep((s) => Math.max(s - 1, 0));
   };
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (step < LAST) return next(); // Enter key on an earlier step
     if (inFlight.current) return; // duplicate-submission guard
     setServerError("");
 
-    const payload: SubmissionPayload = {
-      fullName: fullName.trim(),
-      email: email.trim(),
-      phone: phone.trim(),
-      consent,
-      website,
-      elapsedMs: Date.now() - startedAt.current,
-      cards: cards.map(({ name, category, set, condition, grading, quantity, askingPrice, notes }) => ({
-        name: name.trim(),
-        category,
-        set: set.trim(),
-        condition,
-        grading,
-        quantity: quantity.trim(),
-        askingPrice: askingPrice.trim(),
-        notes: notes.trim(),
-      })),
-    };
-
-    const found = validateSubmission(payload);
-    if (allImages.length === 0) found.images = "Please add at least one photo so we can review your cards.";
-    if (processing) found.images = "Please wait a moment — your photos are still being prepared.";
+    const payload = buildPayload();
+    const found = findErrors();
     setErrors(found);
     if (Object.keys(found).length > 0) {
+      setStep(Math.min(...Object.keys(found).map(stepOf)));
       focusFirstError();
       return;
     }
@@ -276,6 +359,7 @@ export function SubmissionForm({ aside }: { aside?: React.ReactNode }) {
         setStatus("error");
         if (res.fieldErrors) {
           setErrors(res.fieldErrors);
+          setStep(Math.min(...Object.keys(res.fieldErrors).map(stepOf), LAST));
           focusFirstError();
         }
         setServerError(res.error);
@@ -307,16 +391,13 @@ export function SubmissionForm({ aside }: { aside?: React.ReactNode }) {
               noValidate
               onSubmit={onSubmit}
               aria-busy={busy}
-              aria-describedby="form-required-note"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.4, ease: EASE }}
-              className="space-y-14"
+              className="space-y-10"
             >
-              <p id="form-required-note" className="text-sm text-haze">
-                Fields marked <span className="text-mint">*</span> are required.
-              </p>
+              <StepHeader step={step} total={STEPS.length} onBack={step > 0 && !busy ? back : undefined} />
 
               {(errorCount > 0 || serverError) && (
                 <div
@@ -354,323 +435,416 @@ export function SubmissionForm({ aside }: { aside?: React.ReactNode }) {
                 />
               </div>
 
-              {/* A. Collector details */}
-              <fieldset disabled={busy} className="mx-0 min-w-0 border-0 p-0">
-                <FieldsetHeading
-                  index="A"
-                  title="Your details"
-                  description="So we know who you are and how to reach you."
-                />
-                <div className="grid gap-6 md:grid-cols-2">
-                  <TextField
-                    id="fullName"
-                    label="Full name"
-                    required
-                    autoComplete="name"
-                    maxLength={LIMITS.text.name}
-                    value={fullName}
-                    error={errors.fullName}
-                    onChange={(e) => {
-                      setFullName(e.target.value);
-                      clearError("fullName");
-                    }}
-                    className="md:col-span-2"
-                  />
-                  <TextField
-                    id="email"
-                    label="Email address"
-                    type="email"
-                    inputMode="email"
-                    required
-                    autoComplete="email"
-                    maxLength={LIMITS.text.email}
-                    value={email}
-                    error={errors.email}
-                    onChange={(e) => {
-                      setEmail(e.target.value);
-                      clearError("email");
-                    }}
-                  />
-                  <TextField
-                    id="phone"
-                    label="Phone number"
-                    type="tel"
-                    inputMode="tel"
-                    autoComplete="tel"
-                    maxLength={LIMITS.text.phone}
-                    value={phone}
-                    error={errors.phone}
-                    onChange={(e) => {
-                      setPhone(e.target.value);
-                      clearError("phone");
-                    }}
-                  />
-                </div>
-              </fieldset>
-
-              {/* B + C. Cards and photos */}
-              <fieldset disabled={busy} className="mx-0 min-w-0 border-0 p-0">
-                <FieldsetHeading
-                  index="B"
-                  title="Your cards"
-                  description="Add each card you'd like us to look at, with photos. For big collections, add the highlights and describe the rest."
-                />
-
-                <ol className="space-y-6">
-                  <AnimatePresence initial={false}>
-                    {cards.map((card, i) => {
-                      const k = (f: string) => errors[`cards.${i}.${f}`];
-                      const pid = `card-${card.id}`;
-                      return (
-                        <motion.li
-                          key={card.id}
-                          layout="position"
-                          initial={{ opacity: 0, y: 16 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                          transition={{ duration: 0.45, ease: EASE }}
-                          className="hairline relative rounded-[1.5rem] bg-navy-800/70 p-5 sm:p-7"
-                          aria-labelledby={`${pid}-title`}
-                          onFocusCapture={() => setActiveId(card.id)}
-                        >
-                          <div className="mb-6 flex items-center justify-between gap-4">
-                            <h3
-                              id={`${pid}-title`}
-                              className="flex items-center gap-3 font-display text-xl font-semibold tracking-[-0.02em]"
-                            >
-                              <span className="rounded-md bg-mint/10 px-2 py-1 font-mono text-xs text-mint">
-                                {String(i + 1).padStart(2, "0")}
-                              </span>
-                              {card.name.trim() ? <span className="truncate">{card.name}</span> : `Card ${i + 1}`}
-                            </h3>
-                            {cards.length > 1 && (
-                              <button
-                                type="button"
-                                onClick={() => removeCard(card.id)}
-                                className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-2 text-sm text-mist transition-colors hover:bg-white/5 hover:text-white"
-                                aria-label={`Remove card ${i + 1}${card.name ? ` (${card.name})` : ""}`}
-                              >
-                                <Trash2 aria-hidden="true" className="size-4" />
-                                Remove
-                              </button>
-                            )}
-                          </div>
-
-                          <div className="grid gap-6 md:grid-cols-6">
-                            <TextField
-                              id={`${pid}-name`}
-                              label="Card name or description"
-                              required
-                              placeholder="e.g. Charizard holo, Base Set"
-                              maxLength={LIMITS.text.cardName}
-                              value={card.name}
-                              error={k("name")}
-                              onChange={(e) => setCardField(i, card.id, "name", e.target.value)}
-                              className="md:col-span-6"
-                            />
-                            <SelectField
-                              id={`${pid}-category`}
-                              label="Category"
-                              options={CATEGORY_OPTIONS}
-                              value={card.category}
-                              error={k("category")}
-                              onChange={(e) => setCardField(i, card.id, "category", e.target.value)}
-                              className="md:col-span-3"
-                            />
-                            <TextField
-                              id={`${pid}-set`}
-                              label="Set or release"
-                              placeholder="e.g. Base Set, Evolving Skies"
-                              maxLength={LIMITS.text.set}
-                              value={card.set}
-                              error={k("set")}
-                              onChange={(e) => setCardField(i, card.id, "set", e.target.value)}
-                              className="md:col-span-3"
-                            />
-                            <SelectField
-                              id={`${pid}-condition`}
-                              label="Condition"
-                              required
-                              options={CONDITION_OPTIONS}
-                              value={card.condition}
-                              error={k("condition")}
-                              onChange={(e) => setCardField(i, card.id, "condition", e.target.value)}
-                              className="md:col-span-2"
-                            />
-                            <SelectField
-                              id={`${pid}-grading`}
-                              label="Grading status"
-                              required
-                              options={GRADING_OPTIONS}
-                              value={card.grading}
-                              error={k("grading")}
-                              onChange={(e) => setCardField(i, card.id, "grading", e.target.value)}
-                              className="md:col-span-2"
-                            />
-                            <TextField
-                              id={`${pid}-quantity`}
-                              label="Quantity"
-                              required
-                              type="number"
-                              inputMode="numeric"
-                              min={1}
-                              max={9999}
-                              step={1}
-                              value={card.quantity}
-                              error={k("quantity")}
-                              onChange={(e) => setCardField(i, card.id, "quantity", e.target.value)}
-                              className="md:col-span-2"
-                            />
-                            <TextField
-                              id={`${pid}-askingPrice`}
-                              label="Asking price"
-                              placeholder="If you have one in mind"
-                              maxLength={LIMITS.text.askingPrice}
-                              value={card.askingPrice}
-                              error={k("askingPrice")}
-                              onChange={(e) => setCardField(i, card.id, "askingPrice", e.target.value)}
-                              className="md:col-span-6"
-                            />
-                            <TextArea
-                              id={`${pid}-notes`}
-                              label="Additional information"
-                              placeholder="Edition, language, notable wear, grade and cert number, or details about a larger collection."
-                              maxLength={LIMITS.text.notes}
-                              value={card.notes}
-                              error={k("notes")}
-                              onChange={(e) => setCardField(i, card.id, "notes", e.target.value)}
-                              className="md:col-span-6"
-                            />
-                            <div className="md:col-span-6" data-error={!!k("images") || undefined}>
-                              <ImageDropzone
-                                cardNumber={i + 1}
-                                images={card.images}
-                                messages={card.messages}
-                                disabled={busy}
-                                error={k("images")}
-                                onAdd={(files) => addImages(card.id, i, files)}
-                                onRemove={(imgId) => removeImage(card.id, imgId)}
-                              />
-                            </div>
-                          </div>
-                        </motion.li>
-                      );
-                    })}
-                  </AnimatePresence>
-                </ol>
-
-                <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                  <button
-                    type="button"
-                    onClick={addCard}
-                    disabled={cards.length >= LIMITS.maxCards}
-                    className="group inline-flex h-12 items-center gap-2.5 self-start rounded-full border border-dashed border-mint/50 px-5 text-[0.95rem] font-semibold text-mint transition-colors hover:border-mint hover:bg-mint/[0.06] disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    <Plus aria-hidden="true" className="size-4 transition-transform group-hover:rotate-90" />
-                    Add another card
-                  </button>
-                  <p className="font-mono text-xs text-haze" aria-live="polite">
-                    {cards.length}/{LIMITS.maxCards} cards · {allImages.length}/{LIMITS.maxImagesTotal} photos ·{" "}
-                    {formatBytes(totalBytes)} of {LIMITS.maxTotalMB} MB
-                  </p>
-                </div>
-                {errors.images && (
-                  <p data-error="true" tabIndex={-1} className="mt-4 text-sm font-medium text-[#ff9a9a]">
-                    {errors.images}
-                  </p>
-                )}
-                {errors.cards && <p className="mt-4 text-sm font-medium text-[#ff9a9a]">{errors.cards}</p>}
-              </fieldset>
-
-              {/* D. Submit */}
-              <fieldset disabled={busy} className="mx-0 min-w-0 border-0 p-0">
-                <FieldsetHeading index="C" title="Send it over" />
-                <div className="mb-6 rounded-[1.5rem] border border-line p-5 lg:hidden">
-                  <LivePreview
-                    compact
-                    cards={previewCards}
-                    activeIndex={activeIndex}
-                    onSelect={(i) => setActiveId(cards[i].id)}
-                  />
-                </div>
-                <div className="rounded-[1.5rem] border border-line p-5 sm:p-7">
-                  <label htmlFor="consent" className="flex cursor-pointer items-start gap-4">
-                    <span className="relative mt-0.5 flex size-6 shrink-0">
-                      <input
-                        id="consent"
-                        type="checkbox"
-                        checked={consent}
-                        aria-invalid={!!errors.consent || undefined}
-                        aria-describedby={errors.consent ? "consent-error" : undefined}
-                        onChange={(e) => {
-                          setConsent(e.target.checked);
-                          clearError("consent");
-                        }}
-                        className={cn(
-                          "peer size-6 cursor-pointer appearance-none rounded-md border bg-navy-900 transition-colors checked:border-mint checked:bg-mint",
-                          errors.consent ? "border-[#ff9a9a]" : "border-white/30",
-                        )}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.div
+                  key={step}
+                  initial={{ opacity: 0, x: 40 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -40 }}
+                  transition={{ duration: 0.35, ease: EASE }}
+                >
+                  {step === 0 && (
+                    <>
+                      <StepTitle
+                        id="step-0-title"
+                        eyebrow="Step 1 · Your collection"
+                        title="What are you looking to sell?"
+                        hint="Pick the one that fits best. You'll add the details in a moment."
                       />
-                      <Check
-                        aria-hidden="true"
-                        className="pointer-events-none absolute inset-0 m-auto size-4 text-navy opacity-0 peer-checked:opacity-100"
-                        strokeWidth={3}
+                      <OptionList
+                        name="collectionType"
+                        labelledBy="step-0-title"
+                        options={COLLECTION_TYPES}
+                        value={collectionType}
+                        onPick={pick(setCollectionType, "collectionType")}
+                        error={errors.collectionType}
                       />
-                    </span>
-                    <span className="text-[0.95rem] leading-relaxed text-white/90">
-                      I understand that the information and photos I provide will be used by Grailz Co to review my
-                      submission and respond to me.{" "}
-                      <span className="text-mint" aria-hidden="true">
-                        *
-                      </span>
-                    </span>
-                  </label>
-                  {errors.consent && (
-                    <p id="consent-error" className="mt-3 pl-10 text-sm font-medium text-[#ff9a9a]">
-                      {errors.consent}
-                    </p>
+                    </>
                   )}
 
-                  <p className="mt-6 border-t border-line pt-6 text-sm leading-relaxed text-mist">{submissionNotice}</p>
+                  {step === 1 && (
+                    <>
+                      <StepTitle
+                        id="step-1-title"
+                        eyebrow="Step 2 · Era"
+                        title="When is most of it from?"
+                        hint="A rough idea is plenty."
+                      />
+                      <OptionList
+                        name="era"
+                        labelledBy="step-1-title"
+                        options={ERA_OPTIONS}
+                        value={era}
+                        onPick={pick(setEra, "era")}
+                        error={errors.era}
+                      />
+                    </>
+                  )}
 
-                  <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center">
-                    <Button
-                      type="submit"
-                      size="lg"
-                      icon={busy ? "none" : "arrow"}
-                      disabled={busy}
-                      className="w-full sm:w-auto"
-                    >
-                      {busy ? (
-                        <span className="inline-flex items-center gap-2.5">
-                          <Loader2 aria-hidden="true" className="size-5 animate-spin" />
-                          {progress < 100 ? `Uploading… ${progress}%` : "Sending…"}
-                        </span>
-                      ) : (
-                        "Submit Your Cards"
-                      )}
-                    </Button>
-                    {busy && (
-                      <div
-                        className="h-1 w-full overflow-hidden rounded-full bg-white/10 sm:max-w-[12rem]"
-                        role="progressbar"
-                        aria-label="Upload progress"
-                        aria-valuemin={0}
-                        aria-valuemax={100}
-                        aria-valuenow={progress}
-                      >
-                        <div
-                          className="h-full bg-mint transition-[width] duration-200"
-                          style={{ width: `${progress}%` }}
+                  {step === 2 && (
+                    <>
+                      <StepTitle
+                        id="step-2-title"
+                        eyebrow="Step 3 · Value"
+                        title="Roughly what's it worth?"
+                        hint="Your best estimate is totally fine. This just helps us review it."
+                      />
+                      <OptionList
+                        name="value"
+                        labelledBy="step-2-title"
+                        options={VALUE_OPTIONS}
+                        value={value}
+                        onPick={pick(setValue, "value")}
+                        error={errors.value}
+                      />
+                    </>
+                  )}
+
+                  {step === 3 && (
+                    <fieldset disabled={busy} className="mx-0 min-w-0 border-0 p-0">
+                      <StepTitle
+                        id="step-3-title"
+                        eyebrow="Step 4 · Your cards"
+                        title="Tell us about your cards"
+                        hint="Add each card you'd like us to look at, with photos. For big collections, add the highlights and describe the rest."
+                      />
+                      <div className="mt-8">
+                        <ol className="space-y-6">
+                          <AnimatePresence initial={false}>
+                            {cards.map((card, i) => {
+                              const k = (f: string) => errors[`cards.${i}.${f}`];
+                              const pid = `card-${card.id}`;
+                              return (
+                                <motion.li
+                                  key={card.id}
+                                  layout="position"
+                                  initial={{ opacity: 0, y: 16 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  exit={{ opacity: 0, height: 0, marginTop: 0 }}
+                                  transition={{ duration: 0.45, ease: EASE }}
+                                  className="hairline relative rounded-[1.5rem] bg-navy-800/70 p-5 sm:p-7"
+                                  aria-labelledby={`${pid}-title`}
+                                  onFocusCapture={() => setActiveId(card.id)}
+                                >
+                                  <div className="mb-6 flex items-center justify-between gap-4">
+                                    <h3
+                                      id={`${pid}-title`}
+                                      className="flex items-center gap-3 font-display text-xl font-semibold tracking-[-0.02em]"
+                                    >
+                                      <span className="rounded-md bg-mint/10 px-2 py-1 font-mono text-xs text-mint">
+                                        {String(i + 1).padStart(2, "0")}
+                                      </span>
+                                      {card.name.trim() ? (
+                                        <span className="truncate">{card.name}</span>
+                                      ) : (
+                                        `Card ${i + 1}`
+                                      )}
+                                    </h3>
+                                    {cards.length > 1 && (
+                                      <button
+                                        type="button"
+                                        onClick={() => removeCard(card.id)}
+                                        className="inline-flex shrink-0 items-center gap-1.5 rounded-full px-3 py-2 text-sm text-mist transition-colors hover:bg-white/5 hover:text-white"
+                                        aria-label={`Remove card ${i + 1}${card.name ? ` (${card.name})` : ""}`}
+                                      >
+                                        <Trash2 aria-hidden="true" className="size-4" />
+                                        Remove
+                                      </button>
+                                    )}
+                                  </div>
+
+                                  <div className="grid gap-6 md:grid-cols-6">
+                                    <TextField
+                                      id={`${pid}-name`}
+                                      label="Card name or description"
+                                      required
+                                      placeholder="e.g. Charizard holo, Base Set"
+                                      maxLength={LIMITS.text.cardName}
+                                      value={card.name}
+                                      error={k("name")}
+                                      onChange={(e) => setCardField(i, card.id, "name", e.target.value)}
+                                      className="md:col-span-6"
+                                    />
+                                    <SelectField
+                                      id={`${pid}-category`}
+                                      label="Category"
+                                      options={CATEGORY_OPTIONS}
+                                      value={card.category}
+                                      error={k("category")}
+                                      onChange={(e) => setCardField(i, card.id, "category", e.target.value)}
+                                      className="md:col-span-3"
+                                    />
+                                    <TextField
+                                      id={`${pid}-set`}
+                                      label="Set or release"
+                                      placeholder="e.g. Base Set, Evolving Skies"
+                                      maxLength={LIMITS.text.set}
+                                      value={card.set}
+                                      error={k("set")}
+                                      onChange={(e) => setCardField(i, card.id, "set", e.target.value)}
+                                      className="md:col-span-3"
+                                    />
+                                    <SelectField
+                                      id={`${pid}-condition`}
+                                      label="Condition"
+                                      required
+                                      options={CONDITION_OPTIONS}
+                                      value={card.condition}
+                                      error={k("condition")}
+                                      onChange={(e) => setCardField(i, card.id, "condition", e.target.value)}
+                                      className="md:col-span-2"
+                                    />
+                                    <SelectField
+                                      id={`${pid}-grading`}
+                                      label="Grading status"
+                                      required
+                                      options={GRADING_OPTIONS}
+                                      value={card.grading}
+                                      error={k("grading")}
+                                      onChange={(e) => setCardField(i, card.id, "grading", e.target.value)}
+                                      className="md:col-span-2"
+                                    />
+                                    <TextField
+                                      id={`${pid}-quantity`}
+                                      label="Quantity"
+                                      required
+                                      type="number"
+                                      inputMode="numeric"
+                                      min={1}
+                                      max={9999}
+                                      step={1}
+                                      value={card.quantity}
+                                      error={k("quantity")}
+                                      onChange={(e) => setCardField(i, card.id, "quantity", e.target.value)}
+                                      className="md:col-span-2"
+                                    />
+                                    <TextField
+                                      id={`${pid}-askingPrice`}
+                                      label="Asking price"
+                                      placeholder="If you have one in mind"
+                                      maxLength={LIMITS.text.askingPrice}
+                                      value={card.askingPrice}
+                                      error={k("askingPrice")}
+                                      onChange={(e) => setCardField(i, card.id, "askingPrice", e.target.value)}
+                                      className="md:col-span-6"
+                                    />
+                                    <TextArea
+                                      id={`${pid}-notes`}
+                                      label="Additional information"
+                                      placeholder="Edition, language, notable wear, grade and cert number, or details about a larger collection."
+                                      maxLength={LIMITS.text.notes}
+                                      value={card.notes}
+                                      error={k("notes")}
+                                      onChange={(e) => setCardField(i, card.id, "notes", e.target.value)}
+                                      className="md:col-span-6"
+                                    />
+                                    <div className="md:col-span-6" data-error={!!k("images") || undefined}>
+                                      <ImageDropzone
+                                        cardNumber={i + 1}
+                                        images={card.images}
+                                        messages={card.messages}
+                                        disabled={busy}
+                                        error={k("images")}
+                                        onAdd={(files) => addImages(card.id, i, files)}
+                                        onRemove={(imgId) => removeImage(card.id, imgId)}
+                                      />
+                                    </div>
+                                  </div>
+                                </motion.li>
+                              );
+                            })}
+                          </AnimatePresence>
+                        </ol>
+
+                        <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                          <button
+                            type="button"
+                            onClick={addCard}
+                            disabled={cards.length >= LIMITS.maxCards}
+                            className="group inline-flex h-12 items-center gap-2.5 self-start rounded-full border border-dashed border-mint/50 px-5 text-[0.95rem] font-semibold text-mint transition-colors hover:border-mint hover:bg-mint/[0.06] disabled:cursor-not-allowed disabled:opacity-50"
+                          >
+                            <Plus aria-hidden="true" className="size-4 transition-transform group-hover:rotate-90" />
+                            Add another card
+                          </button>
+                          <p className="font-mono text-xs text-haze" aria-live="polite">
+                            {cards.length}/{LIMITS.maxCards} cards · {allImages.length}/{LIMITS.maxImagesTotal} photos ·{" "}
+                            {formatBytes(totalBytes)} of {LIMITS.maxTotalMB} MB
+                          </p>
+                        </div>
+                        {errors.images && (
+                          <p data-error="true" tabIndex={-1} className="mt-4 text-sm font-medium text-[#ff9a9a]">
+                            {errors.images}
+                          </p>
+                        )}
+                        {errors.cards && <p className="mt-4 text-sm font-medium text-[#ff9a9a]">{errors.cards}</p>}
+                      </div>
+                      <div className="mt-6 rounded-[1.5rem] border border-line p-5 lg:hidden">
+                        <LivePreview
+                          compact
+                          cards={previewCards}
+                          activeIndex={activeIndex}
+                          onSelect={(i) => setActiveId(cards[i].id)}
                         />
                       </div>
-                    )}
-                  </div>
-                  <p className="sr-only" aria-live="assertive">
-                    {busy ? "Submitting your cards, please wait." : ""}
-                  </p>
+                    </fieldset>
+                  )}
+
+                  {step === 4 && (
+                    <fieldset disabled={busy} className="mx-0 min-w-0 border-0 p-0">
+                      <StepTitle
+                        id="step-4-title"
+                        eyebrow="Last step"
+                        title="Where should we reach you?"
+                        hint="We'll use these details to follow up about your submission. Fields marked * are required."
+                      />
+                      <div className="mt-8 space-y-6">
+                        <div className="grid gap-6 md:grid-cols-2">
+                          <TextField
+                            id="fullName"
+                            label="Full name"
+                            required
+                            autoComplete="name"
+                            maxLength={LIMITS.text.name}
+                            value={fullName}
+                            error={errors.fullName}
+                            onChange={(e) => {
+                              setFullName(e.target.value);
+                              clearError("fullName");
+                            }}
+                            className="md:col-span-2"
+                          />
+                          <TextField
+                            id="email"
+                            label="Email address"
+                            type="email"
+                            inputMode="email"
+                            required
+                            autoComplete="email"
+                            maxLength={LIMITS.text.email}
+                            value={email}
+                            error={errors.email}
+                            onChange={(e) => {
+                              setEmail(e.target.value);
+                              clearError("email");
+                            }}
+                          />
+                          <TextField
+                            id="phone"
+                            label="Phone number"
+                            type="tel"
+                            inputMode="tel"
+                            autoComplete="tel"
+                            maxLength={LIMITS.text.phone}
+                            value={phone}
+                            error={errors.phone}
+                            onChange={(e) => {
+                              setPhone(e.target.value);
+                              clearError("phone");
+                            }}
+                          />
+                        </div>
+                        <div className="grid gap-6 md:grid-cols-2">
+                          <ChipGroup
+                            label="Best way to reach you"
+                            options={CONTACT_METHODS}
+                            value={contactMethod}
+                            onChange={setContactMethod}
+                          />
+                          <ChipGroup label="Best time" options={BEST_TIMES} value={bestTime} onChange={setBestTime} />
+                        </div>
+                        <div className="rounded-[1.5rem] border border-line p-5 sm:p-7">
+                          <label htmlFor="consent" className="flex cursor-pointer items-start gap-4">
+                            <span className="relative mt-0.5 flex size-6 shrink-0">
+                              <input
+                                id="consent"
+                                type="checkbox"
+                                checked={consent}
+                                aria-invalid={!!errors.consent || undefined}
+                                aria-describedby={errors.consent ? "consent-error" : undefined}
+                                onChange={(e) => {
+                                  setConsent(e.target.checked);
+                                  clearError("consent");
+                                }}
+                                className={cn(
+                                  "peer size-6 cursor-pointer appearance-none rounded-md border bg-navy-900 transition-colors checked:border-mint checked:bg-mint",
+                                  errors.consent ? "border-[#ff9a9a]" : "border-white/30",
+                                )}
+                              />
+                              <Check
+                                aria-hidden="true"
+                                className="pointer-events-none absolute inset-0 m-auto size-4 text-navy opacity-0 peer-checked:opacity-100"
+                                strokeWidth={3}
+                              />
+                            </span>
+                            <span className="text-[0.95rem] leading-relaxed text-white/90">
+                              I understand that the information and photos I provide will be used by Grailz Co to review
+                              my submission and respond to me.{" "}
+                              <span className="text-mint" aria-hidden="true">
+                                *
+                              </span>
+                            </span>
+                          </label>
+                          {errors.consent && (
+                            <p id="consent-error" className="mt-3 pl-10 text-sm font-medium text-[#ff9a9a]">
+                              {errors.consent}
+                            </p>
+                          )}
+
+                          <p className="mt-6 border-t border-line pt-6 text-sm leading-relaxed text-mist">
+                            {submissionNotice}
+                          </p>
+
+                          <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center">
+                            <Button
+                              type="submit"
+                              size="lg"
+                              icon={busy ? "none" : "arrow"}
+                              disabled={busy}
+                              className="w-full sm:w-auto"
+                            >
+                              {busy ? (
+                                <span className="inline-flex items-center gap-2.5">
+                                  <Loader2 aria-hidden="true" className="size-5 animate-spin" />
+                                  {progress < 100 ? `Uploading… ${progress}%` : "Sending…"}
+                                </span>
+                              ) : (
+                                "Submit Your Cards"
+                              )}
+                            </Button>
+                            {busy && (
+                              <div
+                                className="h-1 w-full overflow-hidden rounded-full bg-white/10 sm:max-w-[12rem]"
+                                role="progressbar"
+                                aria-label="Upload progress"
+                                aria-valuemin={0}
+                                aria-valuemax={100}
+                                aria-valuenow={progress}
+                              >
+                                <div
+                                  className="h-full bg-mint transition-[width] duration-200"
+                                  style={{ width: `${progress}%` }}
+                                />
+                              </div>
+                            )}
+                          </div>
+                          <p className="sr-only" aria-live="assertive">
+                            {busy ? "Submitting your cards, please wait." : ""}
+                          </p>
+                        </div>
+                      </div>
+                    </fieldset>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+
+              {step === 3 && (
+                <div className="flex justify-end">
+                  <Button type="button" size="lg" onClick={next} disabled={processing} className="w-full sm:w-auto">
+                    Continue <ArrowRight aria-hidden="true" className="size-4" />
+                  </Button>
                 </div>
-              </fieldset>
+              )}
+              {step < 3 && <p className="text-sm text-haze">Takes about 2 minutes · No obligation</p>}
             </motion.form>
           )}
         </AnimatePresence>
@@ -678,12 +852,44 @@ export function SubmissionForm({ aside }: { aside?: React.ReactNode }) {
 
       <div className="lg:col-span-4">
         <div className="space-y-6 lg:sticky lg:top-28">
-          {status !== "success" && (
+          {status !== "success" && (collectionType || era || value) && (
+            <div className="hidden rounded-[1.5rem] border border-line p-6 lg:block">
+              <p className="eyebrow">Your answers</p>
+              <dl className="mt-4 space-y-2.5">
+                {(
+                  [
+                    ["Selling", collectionType, 0],
+                    ["Era", era, 1],
+                    ["Value", value, 2],
+                  ] as const
+                ).map(([label, answer, s]) =>
+                  answer ? (
+                    <div key={label} className="flex items-center justify-between gap-3 text-sm">
+                      <dt className="text-haze">{label}</dt>
+                      <dd className="flex items-center gap-2 text-right text-white">
+                        {answer}
+                        <button
+                          type="button"
+                          onClick={() => setStep(s)}
+                          disabled={busy}
+                          className="text-xs text-mint underline-offset-4 hover:underline"
+                          aria-label={`Change ${label.toLowerCase()}`}
+                        >
+                          Edit
+                        </button>
+                      </dd>
+                    </div>
+                  ) : null,
+                )}
+              </dl>
+            </div>
+          )}
+          {status !== "success" && step >= 3 && (
             <div className="hidden rounded-[1.5rem] border border-line bg-navy-900/40 p-6 lg:block">
               <LivePreview cards={previewCards} activeIndex={activeIndex} onSelect={(i) => setActiveId(cards[i].id)} />
             </div>
           )}
-          {aside}
+          {(step < 3 || status === "success") && aside}
         </div>
       </div>
     </div>

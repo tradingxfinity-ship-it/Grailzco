@@ -73,6 +73,11 @@ export async function POST(req: Request) {
 
   const rawCards = Array.isArray(raw.cards) ? raw.cards.slice(0, LIMITS.maxCards + 1) : [];
   const payload: SubmissionPayload = {
+    collectionType: str(raw.collectionType, 80),
+    era: str(raw.era, 80),
+    value: str(raw.value, 80),
+    contactMethod: str(raw.contactMethod, 20),
+    bestTime: str(raw.bestTime, 20),
     fullName: str(raw.fullName).trim(),
     email: str(raw.email).trim(),
     phone: str(raw.phone).trim(),

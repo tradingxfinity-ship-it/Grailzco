@@ -23,6 +23,36 @@ export const CATEGORY_OPTIONS = [
   "Other trading card",
 ] as const;
 
+/* Step-by-step questions asked before the card details. */
+export const COLLECTION_TYPES = [
+  { value: "Singles & holos", hint: "Rares, vintage, chase cards" },
+  { value: "Graded cards", hint: "PSA, BGS, CGC slabs" },
+  { value: "A collection or lot", hint: "Binders, bulk, mixed lots" },
+  { value: "A mix of everything", hint: "Singles, slabs and more" },
+] as const;
+
+export const ERA_OPTIONS = [
+  { value: "Vintage (1999–2003)", hint: "Base Set, Jungle, Fossil, Neo, e-Card" },
+  { value: "2003–2016", hint: "EX, Diamond & Pearl, Black & White, XY" },
+  { value: "Modern (2017–now)", hint: "Sun & Moon, Sword & Shield, Scarlet & Violet" },
+  { value: "A mix of eras", hint: "Some old, some new" },
+  { value: "Not sure", hint: "That's fine — we'll take a look" },
+] as const;
+
+export const VALUE_OPTIONS = [
+  { value: "Under $500", hint: "" },
+  { value: "$500 – $2,500", hint: "" },
+  { value: "$2,500 – $10,000", hint: "" },
+  { value: "$10,000+", hint: "" },
+  { value: "Not sure", hint: "Your best guess is fine" },
+] as const;
+
+export const CONTACT_METHODS = ["Email", "Call", "Text"] as const;
+export const BEST_TIMES = ["Morning", "Afternoon", "Evening", "Anytime"] as const;
+
+const inList = (list: readonly ({ value: string } | string)[], v: string) =>
+  list.some((o) => (typeof o === "string" ? o : o.value) === v);
+
 export const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"] as const;
 
 /**
@@ -74,6 +104,11 @@ export type CardEntry = {
 };
 
 export type SubmissionPayload = {
+  collectionType: string;
+  era: string;
+  value: string;
+  contactMethod: string;
+  bestTime: string;
   fullName: string;
   email: string;
   phone: string;
@@ -105,6 +140,12 @@ const PHONE_RE = /^[+()\-.\s\d]{6,}$/;
 export function validateSubmission(p: SubmissionPayload): FieldErrors {
   const e: FieldErrors = {};
   const t = LIMITS.text;
+
+  if (!inList(COLLECTION_TYPES, p.collectionType)) e.collectionType = "Please choose what you're looking to sell.";
+  if (!inList(ERA_OPTIONS, p.era)) e.era = "Please choose when most of it is from.";
+  if (!inList(VALUE_OPTIONS, p.value)) e.value = "Please choose a rough value (or “Not sure”).";
+  if (p.contactMethod && !inList(CONTACT_METHODS, p.contactMethod)) e.contactMethod = "Please choose from the list.";
+  if (p.bestTime && !inList(BEST_TIMES, p.bestTime)) e.bestTime = "Please choose from the list.";
 
   if (!p.fullName.trim()) e.fullName = "Please enter your full name.";
   else if (p.fullName.length > t.name) e.fullName = `Please keep your name under ${t.name} characters.`;
