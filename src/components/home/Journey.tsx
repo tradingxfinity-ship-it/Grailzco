@@ -18,9 +18,13 @@ export function Journey() {
   return (
     <section id="how-it-works" aria-labelledby="journey-title" className="relative border-t border-line bg-navy-900 py-24 md:py-36">
       <div className="container-grail">
-        <div className="max-w-3xl">
+        <div>
           <SectionLabel index="02">How it works</SectionLabel>
-          <SplitHeadline id="journey-title" lines={["Three stages,", "one *clear* path."]} className="display-lg mt-8" />
+          <SplitHeadline
+            id="journey-title"
+            lines={["Three stages, one *clear* path."]}
+            className="mt-8 font-display text-[clamp(2.25rem,4.6vw,4.75rem)] font-bold leading-[1] tracking-[-0.04em]"
+          />
         </div>
 
         <ol ref={ref} className="relative mt-20 md:mt-28">
