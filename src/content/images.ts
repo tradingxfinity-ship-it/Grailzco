@@ -60,12 +60,6 @@ export const images = {
     ],
   } satisfies Record<string, ImageSlot[]>,
 
-  /** Whatnot panel fan: left, centre (front), right. */
-  whatnotFan: [
-    { src: "/images/cards/victini.png", alt: "Japanese Victini full-art Pokémon card", label: "whatnot-victini" },
-    { src: "/images/cards/whatnot-grailzco-card.png", alt: "Card with the Whatnot and Grailz Co logos", label: "whatnot-card" },
-    { src: "/images/cards/quaxwell.png", alt: "Quaxwell Pokémon card", label: "whatnot-quaxwell" },
-  ] satisfies ImageSlot[],
 
   /** Faded fan behind the closing CTA: left, centre, right. */
   ctaFan: [

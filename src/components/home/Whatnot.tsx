@@ -1,22 +1,13 @@
-import Image from "next/image";
 import { Radio } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 import { Reveal, SectionLabel, SplitHeadline } from "@/components/ui/Reveal";
 import { siteConfig } from "@/config/site";
-import { images } from "@/content/images";
-import { cn } from "@/lib/cn";
+import { WhatnotLinkUp } from "@/components/home/WhatnotLinkUp";
 
 /**
  * Community feature on a light "paper" surface for rhythm.
- * Profile stats are intentionally not shown; the fan cards live in images.whatnotFan.
+ * Profile stats are intentionally not shown; the panel animates the two logos linking up.
  */
-/** Fan positions: left, centre (front), right. Side cards spread a little on hover. */
-const FAN = [
-  "absolute left-[10%] top-[10%] w-[32%] -rotate-[12deg] transition-transform duration-500 ease-[var(--ease-grail)] group-hover:-translate-x-3 group-hover:-rotate-[16deg]",
-  "absolute left-1/2 top-0 z-10 w-[36%] -translate-x-1/2 transition-transform duration-500 ease-[var(--ease-grail)] group-hover:-translate-y-2",
-  "absolute right-[10%] top-[10%] w-[32%] rotate-[12deg] transition-transform duration-500 ease-[var(--ease-grail)] group-hover:translate-x-3 group-hover:rotate-[16deg]",
-];
-
 export function Whatnot() {
   return (
     <section aria-labelledby="whatnot-title" className="relative bg-paper py-24 text-ink md:py-32">
@@ -54,22 +45,7 @@ export function Whatnot() {
                 </span>
                 <span className="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-haze">Preview</span>
               </div>
-              <ul className="group relative mx-auto mt-8 aspect-[5/3] w-full" aria-label="Cards from Grailz Co on Whatnot">
-                {images.whatnotFan.map((card, i) => (
-                  <li key={card.label} className={FAN[i]}>
-                    <div
-                      className={cn(
-                        "relative aspect-[330/460]",
-                        i === 1
-                          ? "drop-shadow-[0_24px_30px_rgb(0_0_0/0.6)]"
-                          : "overflow-hidden rounded-[0.6rem] shadow-[0_20px_40px_-16px_rgb(0_0_0/0.8)] ring-1 ring-white/10",
-                      )}
-                    >
-                      <Image src={card.src} alt={card.alt} fill sizes="(min-width: 1024px) 180px, 40vw" className="object-cover" />
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              <WhatnotLinkUp />
               <p className="mt-8 border-t border-line pt-5 text-sm leading-relaxed text-mist">
                 {/* PLACEHOLDER — replace with real Whatnot show imagery or schedule when confirmed. */}
                 Live-show imagery and details coming soon. Visit the profile for the latest.
