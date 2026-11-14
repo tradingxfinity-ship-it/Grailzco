@@ -18,8 +18,10 @@ export function Journey() {
   return (
     <section id="how-it-works" aria-labelledby="journey-title" className="relative border-t border-line bg-navy-900 py-24 md:py-36">
       <div className="container-grail">
-        <div>
-          <SectionLabel index="02">How it works</SectionLabel>
+        <div className="text-center">
+          <SectionLabel index="02" className="justify-center">
+            How it works
+          </SectionLabel>
           <SplitHeadline
             id="journey-title"
             lines={["Three stages, one *clear* path."]}
