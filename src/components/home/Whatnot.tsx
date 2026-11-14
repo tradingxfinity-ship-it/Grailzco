@@ -2,11 +2,11 @@ import { Radio } from "lucide-react";
 import { ButtonLink } from "@/components/ui/Button";
 import { Reveal, SectionLabel, SplitHeadline } from "@/components/ui/Reveal";
 import { siteConfig } from "@/config/site";
-import { WhatnotLinkUp } from "@/components/home/WhatnotLinkUp";
+import { WhatnotFlip } from "@/components/home/WhatnotFlip";
 
 /**
  * Community feature on a light "paper" surface for rhythm.
- * Profile stats are intentionally not shown; the panel animates the two logos linking up.
+ * Profile stats are intentionally not shown; the panel flips a card between the two logos.
  */
 export function Whatnot() {
   return (
@@ -45,7 +45,7 @@ export function Whatnot() {
                 </span>
                 <span className="font-mono text-[0.65rem] uppercase tracking-[0.14em] text-haze">Preview</span>
               </div>
-              <WhatnotLinkUp />
+              <WhatnotFlip />
               <p className="mt-8 border-t border-line pt-5 text-sm leading-relaxed text-mist">
                 {/* PLACEHOLDER — replace with real Whatnot show imagery or schedule when confirmed. */}
                 Live-show imagery and details coming soon. Visit the profile for the latest.
