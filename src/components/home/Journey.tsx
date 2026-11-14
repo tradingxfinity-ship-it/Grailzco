@@ -24,7 +24,7 @@ export function Journey() {
           </SectionLabel>
           <SplitHeadline
             id="journey-title"
-            lines={["Three stages, one *clear* path."]}
+            lines={["Selling your cards is *easy.*"]}
             className="mt-8 font-display text-[clamp(2.25rem,4.6vw,4.75rem)] font-bold leading-[1] tracking-[-0.04em]"
           />
         </div>

@@ -22,9 +22,9 @@ export default function HomePage() {
       <Whatnot />
       <FinalCta
         id="final-cta-title"
-        lines={["Your Collection", "Could Be *Next.*"]}
-        body="Have cards you're considering selling? Show us what you've got."
-        cta="Sell Your Cards"
+        lines={["Ready to sell", "your *cards?*"]}
+        body="It only takes a couple of minutes. Tell us what you've got and we'll take it from there."
+        cta="Get Started"
       />
     </>
   );

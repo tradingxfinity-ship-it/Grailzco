@@ -33,10 +33,10 @@ export function SubmissionSuccess({ email, onReset }: { email: string; onReset: 
         tabIndex={-1}
         className="relative mt-10 max-w-2xl font-display text-[clamp(2.4rem,5vw,4.25rem)] font-bold leading-[0.95] tracking-[-0.04em] outline-none"
       >
-        Your Cards Are in <span className="text-mint">Good Hands.</span>
+        Thanks, we&apos;ve got <span className="text-mint">your cards!</span>
       </h2>
       <p className="lede relative mt-6 max-w-xl">
-        Your submission has been received. Grailz Co will review the details and contact you regarding the next steps.
+        Your submission came through. We&apos;ll take a look and get back to you soon about next steps.
       </p>
       {email && (
         <p className="relative mt-4 text-sm text-haze">

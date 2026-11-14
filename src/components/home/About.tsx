@@ -12,7 +12,7 @@ export function About() {
           </SectionLabel>
           <SplitHeadline
             id="about-title"
-            lines={["Built for the", "*Love* of the Cards."]}
+            lines={["Collectors,", "just like *you.*"]}
             className="display-md mt-6 text-ink [&_.text-mint]:!text-[#0a9e78]"
           />
           <Reveal delay={0.15}>

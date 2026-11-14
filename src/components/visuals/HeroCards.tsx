@@ -25,7 +25,7 @@ export function HeroCards() {
     <div className="relative mx-auto w-[calc(var(--card)*4.1)] max-w-full [--card:clamp(4.6rem,min(21vw,19.5svh),13.25rem)]">
       {/* Speech-bubble tags */}
       <Bubble className="left-[2%] top-[-1.5rem] sm:top-[-2rem]" tone="light" delay={1.1} tail="left">
-        Your next grail?
+        Got any of these?
       </Bubble>
       <Bubble className="right-[-2%] top-[-1rem] sm:top-[-1.5rem]" tone="mint" delay={1.25} tail="right">
         @grailzco

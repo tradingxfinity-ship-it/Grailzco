@@ -60,7 +60,7 @@ export function Hero() {
           as="h1"
           immediate
           delay={0.1}
-          lines={["Your Cards.", "Our *Passion.*"]}
+          lines={["Sell your cards", "for *cash.*"]}
           className="font-display text-[clamp(2.6rem,min(6.8vw,8.6svh),6.5rem)] font-bold leading-[0.95] tracking-[-0.045em] text-white"
         />
 
@@ -74,8 +74,8 @@ export function Hero() {
           transition={{ duration: 1, delay: 0.9, ease: EASE }}
           className="lede mt-[min(2rem,3svh)] max-w-[36rem] lg:max-w-[44rem]"
         >
-          Great collections deserve great opportunities. Discover a simpler way to sell your collectible trading cards
-          with Grailz Co.
+          Got Pokémon cards sitting in a binder? Tell us what you have, send a few photos, and we&apos;ll get back to
+          you. Quick, easy and no pressure.
         </motion.p>
 
         <motion.div
@@ -88,10 +88,10 @@ export function Hero() {
             Sell Your Cards
           </ButtonLink>
           <Link
-            href="#about"
+            href="#how-it-works"
             className="group inline-flex items-center gap-2 text-[0.98rem] font-semibold text-white/80 transition-colors hover:text-mint"
           >
-            Explore Grailz Co
+            See how it works
             <ArrowDown aria-hidden="true" className="size-4 transition-transform group-hover:translate-y-0.5" />
           </Link>
         </motion.div>

@@ -26,7 +26,7 @@ const jetbrains = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} — Sell Your Pokémon & Collectible Cards`,
+    default: `${siteConfig.name} — Sell Your Pokémon Cards for Cash`,
     template: `%s · ${siteConfig.name}`,
   },
   description: siteConfig.description,

@@ -52,9 +52,9 @@ const STEPS = ["Start", "What you're selling", "Era", "Value", "Your cards", "Yo
 const LAST = STEPS.length - 1;
 
 const INTRO_POINTS = [
-  { icon: Clock, title: "About 2 minutes", body: "A few taps and some photos" },
-  { icon: ScanSearch, title: "Reviewed individually", body: "A real look at every card" },
-  { icon: ShieldCheck, title: "No obligation", body: "You decide what happens next" },
+  { icon: Clock, title: "Takes 2 minutes", body: "A few taps and some photos" },
+  { icon: ScanSearch, title: "We check every card", body: "A real person looks at yours" },
+  { icon: ShieldCheck, title: "No pressure", body: "You decide if you want to sell" },
 ];
 
 /** Which step an error key belongs to, so failed validation can jump back to it. */
@@ -466,13 +466,13 @@ export function SubmissionForm() {
                         tabIndex={-1}
                         className="mt-4 font-display text-[clamp(2.1rem,4.4vw,3.25rem)] font-bold leading-[0.98] tracking-[-0.045em] text-white outline-none"
                       >
-                        Let&apos;s see what
+                        Sell your cards
                         <br />
-                        you&apos;ve <span className="text-mint">got.</span>
+                        for <span className="text-mint">cash.</span>
                       </h1>
                       <p className="lede mt-4 max-w-xl">
-                        Answer a few quick questions and share some photos. Every submission is reviewed individually,
-                        with no pressure and no obligation.
+                        Answer a few quick questions and send some photos. We&apos;ll take a look and get back to you.
+                        No pressure, no obligation.
                       </p>
                       <ul className="mt-6 grid gap-3 sm:grid-cols-3 [@media(max-height:700px)]:mt-4 [@media(max-height:700px)]:gap-2">
                         {INTRO_POINTS.map(({ icon: Icon, title, body }) => (
@@ -499,8 +499,8 @@ export function SubmissionForm() {
                     <>
                       <StepTitle
                         id="step-1-title"
-                        eyebrow="Step 1 · Your collection"
-                        title="What are you looking to sell?"
+                        eyebrow="Step 1 · Your cards"
+                        title="What are you selling?"
                         hint="Pick the one that fits best. You'll add the details in a moment."
                       />
                       <OptionList
@@ -518,8 +518,8 @@ export function SubmissionForm() {
                     <>
                       <StepTitle
                         id="step-2-title"
-                        eyebrow="Step 2 · Era"
-                        title="When is most of it from?"
+                        eyebrow="Step 2 · Age"
+                        title="How old are your cards?"
                         hint="A rough idea is plenty."
                       />
                       <OptionList
@@ -538,7 +538,7 @@ export function SubmissionForm() {
                       <StepTitle
                         id="step-3-title"
                         eyebrow="Step 3 · Value"
-                        title="Roughly what's it worth?"
+                        title="About how much is it worth?"
                         hint="Your best estimate is totally fine. This just helps us review it."
                       />
                       <OptionList
@@ -556,7 +556,7 @@ export function SubmissionForm() {
                     <fieldset disabled={busy} className="mx-0 min-w-0 border-0 p-0">
                       <StepTitle
                         id="step-4-title"
-                        eyebrow="Step 4 · Your cards"
+                        eyebrow="Step 4 · Details"
                         title="Tell us about your cards"
                         hint="Add each card you'd like us to look at, with photos. For big collections, add the highlights and describe the rest."
                       />
@@ -737,7 +737,7 @@ export function SubmissionForm() {
                       <StepTitle
                         id="step-5-title"
                         eyebrow="Last step"
-                        title="Where should we reach you?"
+                        title="How can we reach you?"
                         hint="We'll use these details to follow up about your submission. Fields marked * are required."
                       />
                       <div className="mt-5 space-y-4">

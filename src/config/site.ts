@@ -5,7 +5,7 @@
 export const siteConfig = {
   name: "Grailz Co",
   shortName: "Grailz",
-  tagline: "Your Cards. Our Passion.",
+  tagline: "Sell Your Pokémon Cards for Cash",
   description:
     "Grailz Co reviews Pokémon and collectible trading-card submissions from collectors. Tell us about your cards, upload photos, and we'll be in touch.",
   // PLACEHOLDER — set NEXT_PUBLIC_SITE_URL in production for canonical URLs, sitemap and OG tags.

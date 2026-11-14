@@ -18,7 +18,7 @@ export function Whatnot() {
           </SectionLabel>
           <SplitHeadline
             id="whatnot-title"
-            lines={["Catch us", "on Whatnot."]}
+            lines={["Catch us live", "on Whatnot."]}
             className="display-lg mt-8 text-ink"
           />
           <Reveal delay={0.1}>
