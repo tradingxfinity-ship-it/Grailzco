@@ -17,10 +17,9 @@ export function SubmissionSuccess({ email, onReset }: { email: string; onReset: 
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.7, ease: EASE }}
-      className="hairline relative overflow-hidden rounded-[2rem] bg-navy-800 px-6 py-14 sm:px-12 sm:py-20"
+      className="relative py-4 sm:py-8"
       role="status"
     >
-      <div aria-hidden="true" className="absolute -right-24 -top-24 size-80 rounded-full bg-mint/20 blur-[100px]" />
       <motion.span
         initial={{ scale: 0.6, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}

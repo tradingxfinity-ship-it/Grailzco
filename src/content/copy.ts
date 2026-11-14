@@ -83,28 +83,5 @@ export const journey = [
   },
 ] as const;
 
-export const sellingTips = [
-  {
-    title: "Photograph clearly",
-    body: "Use even, natural light and avoid glare on holo surfaces and slabs. Fill the frame with the card.",
-  },
-  {
-    title: "Show front and back",
-    body: "Both sides tell the story — edges, corners and centring show up best with a photo of each.",
-  },
-  {
-    title: "Describe condition honestly",
-    body: "Note whitening, scratches, creases or print lines. Accurate details make for a better review.",
-  },
-  {
-    title: "Mention grading",
-    body: "If a card is graded, include the grading company and grade, and make sure the label is readable.",
-  },
-  {
-    title: "Detail larger collections",
-    body: "For lots and binders, list the highlights and give a rough count. Photograph standout cards individually.",
-  },
-] as const;
-
 export const submissionNotice =
   "Submitting your cards does not guarantee an offer. Grailz Co will review your information and contact you if further details are needed.";
