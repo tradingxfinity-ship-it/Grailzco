@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function SellPage() {
   return (
-    <div className="container-grail pb-16 pt-4 md:pb-24 md:pt-8">
+    <div className="container-grail h-full pb-4 sm:pb-6">
       <SubmissionForm />
     </div>
   );

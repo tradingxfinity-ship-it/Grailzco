@@ -37,30 +37,20 @@ export function StepHeader({ step, total, onBack }: { step: number; total: numbe
 }
 
 /** Eyebrow pill + big question + helper line for the top of a step. */
-export function StepTitle({
-  id,
-  eyebrow,
-  title,
-  hint,
-}: {
-  id: string;
-  eyebrow: string;
-  title: string;
-  hint?: string;
-}) {
+export function StepTitle({ id, eyebrow, title, hint }: { id: string; eyebrow: string; title: string; hint?: string }) {
   return (
     <div>
-      <span className="inline-flex rounded-full border border-mint/30 bg-mint/[0.08] px-3 py-1 font-mono text-[0.65rem] uppercase tracking-[0.14em] text-mint">
+      <span className="inline-flex rounded-full border border-mint/30 bg-mint/[0.08] px-2.5 py-0.5 font-mono text-[0.6rem] uppercase tracking-[0.14em] text-mint">
         {eyebrow}
       </span>
       <h2
         id={id}
         tabIndex={-1}
-        className="mt-5 font-display text-[clamp(1.9rem,3.6vw,2.75rem)] font-bold leading-[1.05] tracking-[-0.035em] text-white outline-none"
+        className="mt-2.5 font-display text-[clamp(1.55rem,2.8vw,2.1rem)] font-bold leading-[1.08] tracking-[-0.035em] text-white outline-none"
       >
         {title}
       </h2>
-      {hint && <p className="mt-3 text-[1.02rem] text-mist">{hint}</p>}
+      {hint && <p className="mt-1.5 text-[0.95rem] text-mist [@media(max-height:700px)]:hidden">{hint}</p>}
     </div>
   );
 }
@@ -83,7 +73,12 @@ export function OptionList({
 }) {
   return (
     <div>
-      <div role="radiogroup" aria-labelledby={labelledBy} aria-invalid={!!error || undefined} className="mt-8 grid gap-3">
+      <div
+        role="radiogroup"
+        aria-labelledby={labelledBy}
+        aria-invalid={!!error || undefined}
+        className="mt-4 grid gap-2 sm:grid-cols-2 sm:gap-2.5 sm:[&>*:last-child:nth-child(odd)]:col-span-2"
+      >
         {options.map((o, i) => {
           const selected = value === o.value;
           return (
@@ -95,7 +90,7 @@ export function OptionList({
               name={name}
               onClick={() => onPick(o.value)}
               className={cn(
-                "group flex w-full items-center gap-4 rounded-2xl border px-5 py-4 text-left transition-[border-color,background-color,transform] duration-300 ease-[var(--ease-grail)] hover:-translate-y-0.5",
+                "group flex w-full items-center gap-3.5 rounded-2xl border px-4 py-2.5 text-left sm:px-5 transition-[border-color,background-color,transform] duration-300 ease-[var(--ease-grail)] hover:-translate-y-0.5",
                 selected
                   ? "border-mint bg-mint/[0.08] shadow-[0_0_0_4px_rgb(55_245_199/0.12)]"
                   : "border-white/12 bg-navy-800/60 hover:border-mint/50 hover:bg-navy-800",
@@ -103,19 +98,30 @@ export function OptionList({
             >
               <span
                 className={cn(
-                  "flex size-9 shrink-0 items-center justify-center rounded-xl font-mono text-xs transition-colors",
+                  "flex size-8 shrink-0 items-center justify-center rounded-lg font-mono text-xs transition-colors",
                   selected ? "bg-mint text-navy" : "bg-white/[0.06] text-mint group-hover:bg-mint/15",
                 )}
               >
-                {selected ? <Check aria-hidden="true" className="size-4" strokeWidth={3} /> : String.fromCharCode(65 + i)}
+                {selected ? (
+                  <Check aria-hidden="true" className="size-4" strokeWidth={3} />
+                ) : (
+                  String.fromCharCode(65 + i)
+                )}
               </span>
               <span className="min-w-0 flex-1">
                 <span className="block font-semibold text-white">{o.value}</span>
-                {o.hint && <span className="mt-0.5 block text-sm text-mist">{o.hint}</span>}
+                {o.hint && (
+                  <span className="block text-[0.82rem] leading-snug text-mist [@media(max-height:700px)]:hidden">
+                    {o.hint}
+                  </span>
+                )}
               </span>
               <ChevronRight
                 aria-hidden="true"
-                className={cn("size-4 shrink-0 transition-transform", selected ? "text-mint" : "text-haze group-hover:translate-x-0.5")}
+                className={cn(
+                  "size-4 shrink-0 transition-transform",
+                  selected ? "text-mint" : "text-haze group-hover:translate-x-0.5",
+                )}
               />
             </button>
           );
@@ -148,7 +154,7 @@ export function ChipGroup({
         {label}
         <span className="font-mono text-[0.65rem] uppercase tracking-[0.12em] text-haze">Optional</span>
       </legend>
-      <div className="flex flex-wrap gap-2">
+      <div className="flex flex-wrap gap-1.5">
         {options.map((o) => {
           const on = value === o;
           return (
@@ -158,8 +164,10 @@ export function ChipGroup({
               aria-pressed={on}
               onClick={() => onChange(on ? "" : o)}
               className={cn(
-                "rounded-full border px-4 py-2 text-sm transition-colors",
-                on ? "border-mint bg-mint/10 text-mint" : "border-white/15 text-mist hover:border-mint/50 hover:text-white",
+                "rounded-full border px-3 py-1.5 text-[0.82rem] transition-colors",
+                on
+                  ? "border-mint bg-mint/10 text-mint"
+                  : "border-white/15 text-mist hover:border-mint/50 hover:text-white",
               )}
             >
               {o}
