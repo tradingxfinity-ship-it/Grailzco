@@ -18,7 +18,6 @@ import { Button } from "@/components/ui/Button";
 import { EASE } from "@/components/ui/Reveal";
 import { SelectField, TextArea, TextField } from "@/components/sell/Fields";
 import { ImageDropzone, type UploadImage } from "@/components/sell/ImageDropzone";
-import { LivePreview, type PreviewCard } from "@/components/sell/LivePreview";
 import { ChipGroup, OptionList, StepHeader, StepTitle } from "@/components/sell/StepParts";
 import { SubmissionSuccess } from "@/components/sell/SubmissionSuccess";
 import { submissionNotice } from "@/content/copy";
@@ -82,7 +81,6 @@ export function SubmissionForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [serverError, setServerError] = useState("");
   const [progress, setProgress] = useState(0);
-  const [activeId, setActiveId] = useState("first"); // card shown in the live preview
   const [step, setStep] = useState(0);
   const [collectionType, setCollectionType] = useState("");
   const [era, setEra] = useState("");
@@ -159,7 +157,6 @@ export function SubmissionForm() {
     const current = cardsRef.current;
     const card = current.find((c) => c.id === cardId);
     if (!card) return;
-    setActiveId(cardId);
     const messages: string[] = [];
     const totalCount = current.reduce((n, c) => n + c.images.length, 0);
     const room = Math.min(LIMITS.maxImagesPerCard - card.images.length, LIMITS.maxImagesTotal - totalCount);
@@ -241,7 +238,6 @@ export function SubmissionForm() {
     if (cards.length >= LIMITS.maxCards) return;
     const c = newCard();
     focusCardId.current = c.id;
-    setActiveId(c.id);
     setCards((cs) => [...cs, c]);
   };
 
@@ -252,7 +248,6 @@ export function SubmissionForm() {
     // Card-indexed errors shift after removal; clear them and re-validate on next submit.
     setErrors((e) => Object.fromEntries(Object.entries(e).filter(([k]) => !k.startsWith("cards."))));
     const prev = cards[idx - 1] ?? cards[idx + 1];
-    if (id === activeId && prev) setActiveId(prev.id);
     if (prev) requestAnimationFrame(() => document.getElementById(`card-${prev.id}-name`)?.focus());
   };
 
@@ -277,7 +272,6 @@ export function SubmissionForm() {
     setStep(0);
     const fresh = newCard();
     setCards([fresh]);
-    setActiveId(fresh.id);
     setErrors({});
     setServerError("");
     setProgress(0);
@@ -386,14 +380,6 @@ export function SubmissionForm() {
   }
 
   const errorCount = Object.keys(errors).length;
-  const previewCards: PreviewCard[] = cards.map(({ images, ...c }) => ({
-    ...c,
-    photos: images.filter((im) => im.status === "ready" && im.url).map((im) => im.url!),
-  }));
-  const activeIndex = Math.max(
-    0,
-    cards.findIndex((c) => c.id === activeId),
-  );
 
   return (
     <div
@@ -490,7 +476,10 @@ export function SubmissionForm() {
                       </p>
                       <ul className="mt-6 grid gap-3 sm:grid-cols-3 [@media(max-height:700px)]:mt-4 [@media(max-height:700px)]:gap-2">
                         {INTRO_POINTS.map(({ icon: Icon, title, body }) => (
-                          <li key={title} className="flex items-center gap-3 rounded-2xl border border-white/10 bg-navy/50 p-4 [@media(max-height:700px)]:p-2.5">
+                          <li
+                            key={title}
+                            className="flex items-center gap-3 rounded-2xl border border-white/10 bg-navy/50 p-4 [@media(max-height:700px)]:p-2.5"
+                          >
                             <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-mint/10 text-mint [@media(max-height:700px)]:size-8">
                               <Icon aria-hidden="true" className="size-[1.1rem]" />
                             </span>
@@ -587,7 +576,6 @@ export function SubmissionForm() {
                                   transition={{ duration: 0.45, ease: EASE }}
                                   className="hairline relative rounded-[1.5rem] bg-navy-800/70 p-5 sm:p-7"
                                   aria-labelledby={`${pid}-title`}
-                                  onFocusCapture={() => setActiveId(card.id)}
                                 >
                                   <div className="mb-6 flex items-center justify-between gap-4">
                                     <h3
@@ -740,14 +728,6 @@ export function SubmissionForm() {
                           </p>
                         )}
                         {errors.cards && <p className="mt-4 text-sm font-medium text-[#ff9a9a]">{errors.cards}</p>}
-                      </div>
-                      <div className="mt-6 rounded-[1.5rem] border border-line bg-navy-900/40 p-5">
-                        <LivePreview
-                          compact
-                          cards={previewCards}
-                          activeIndex={activeIndex}
-                          onSelect={(i) => setActiveId(cards[i].id)}
-                        />
                       </div>
                     </fieldset>
                   )}
