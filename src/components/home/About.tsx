@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { BinderGrid } from "@/components/home/BinderGrid";
 import { Reveal, SectionLabel, SplitHeadline } from "@/components/ui/Reveal";
 import { images } from "@/content/images";
 
@@ -26,17 +26,7 @@ export function About() {
         {/* Binder page in a glass display case */}
         <Reveal y={50} className="lg:col-span-7">
           <div className="hairline relative mx-auto w-full max-w-[min(34rem,69svh)] rounded-[1.5rem] bg-navy p-3.5 shadow-[0_40px_80px_-36px_rgb(0_14_40/0.6)] sm:p-5 lg:rotate-[1.5deg]">
-            <div className="relative">
-              <ul className="grid grid-cols-3 gap-2.5 sm:grid-cols-4 sm:gap-3" aria-label="A page of cards from a collection">
-                {images.aboutBinder.map((card) => (
-                  <li key={card.label} className="rounded-[0.7rem] bg-navy-900 p-1.5 ring-1 ring-inset ring-white/[0.06] sm:p-2">
-                    <div className="relative aspect-[330/460] overflow-hidden rounded-[0.4rem]">
-                      <Image src={card.src} alt={card.alt} fill sizes="(min-width: 1024px) 120px, 28vw" className="object-cover" />
-                    </div>
-                  </li>
-                ))}
-              </ul>
-
+            <BinderGrid cards={images.aboutBinder}>
               {/* Glass pane: tinted face, bevelled edge, and two diagonal reflections */}
               <div
                 aria-hidden="true"
@@ -49,7 +39,7 @@ export function About() {
                 </span>
                 <span className="absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-white/90 to-transparent" />
               </div>
-            </div>
+            </BinderGrid>
           </div>
         </Reveal>
       </div>
