@@ -15,6 +15,12 @@ const CHAPTERS = [
   { tag: "Paid", caption: "You get paid. No surprises." },
 ] as const;
 
+const PROOF = [
+  ["20+ years", "buying collectibles"],
+  ["High-end to everyday:", "every card gets the same care"],
+  ["Full transparency:", "you see every step"],
+] as const;
+
 const CHAPTER_MS = 4000;
 const CHECKS = ["Corners", "Surface", "Edges", "Centering"] as const;
 
@@ -27,10 +33,33 @@ export function Honesty() {
           <SectionLabel index="01" className="!text-ink/60 [&_span:first-child]:!text-ink [&_span:nth-child(2)]:!bg-ink/30">
             About Us
           </SectionLabel>
-          <SplitHeadline id="honesty-title" lines={["Straight talk,", "no *games.*"]} className="display-md mt-6 text-ink [&_.text-mint]:!text-[#0a9e78]" />
+          <SplitHeadline
+            id="honesty-title"
+            lines={["Honest offers,", "*every* time."]}
+            className="display-md mt-6 text-ink [&_.text-mint]:!text-[#0a9e78]"
+          />
           <Reveal delay={0.15}>
-            <p className="mt-6 max-w-sm text-[1.05rem] leading-relaxed text-ink/70">We&apos;re collectors too. Here&apos;s what happens to your card, with nothing hidden.</p>
+            <p className="mt-6 max-w-md text-[1.05rem] leading-relaxed text-ink/70">
+              We&apos;ve been buying collectibles for over 20 years, from high-end grails to everyday cards. That
+              experience means we know what your collection is worth, and we&apos;ll always tell you straight.
+            </p>
+            <p className="mt-4 max-w-md text-[1.05rem] leading-relaxed text-ink/70">
+              Every collection is evaluated with integrity. We show you what we see, explain how we reached our offer,
+              and never pressure you to sell.
+            </p>
           </Reveal>
+          <ul className="mt-8 space-y-3">
+            {PROOF.map(([title, rest], i) => (
+              <Reveal as="li" key={title} delay={0.25 + i * 0.08} className="flex items-center gap-3">
+                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-navy text-mint">
+                  <Check aria-hidden="true" className="size-3.5" strokeWidth={3} />
+                </span>
+                <span className="text-[0.98rem] text-ink/70">
+                  <strong className="font-semibold text-ink">{title}</strong> {rest}
+                </span>
+              </Reveal>
+            ))}
+          </ul>
         </div>
         <Reveal y={40} className="lg:col-span-7">
           <Story />
@@ -46,10 +75,16 @@ function Story() {
   const [step, setStep] = useState(0);
   // Bumped on every manual pick so the progress bar and timer restart.
   const [run, setRun] = useState(0);
+  // Bumped each time the story starts over, so the experience seal stamps down again.
+  const [loop, setLoop] = useState(0);
 
   useEffect(() => {
     if (!inView) return;
-    const t = setTimeout(() => setStep((s) => (s + 1) % CHAPTERS.length), CHAPTER_MS);
+    const t = setTimeout(() => {
+      const next = (step + 1) % CHAPTERS.length;
+      if (next === 0) setLoop((l) => l + 1);
+      setStep(next);
+    }, CHAPTER_MS);
     return () => clearTimeout(t);
   }, [inView, step, run]);
 
@@ -85,6 +120,7 @@ function Story() {
           </AnimatePresence>
         </div>
 
+        <ExperienceSeal key={loop} />
         <Package show={step === 0} />
         <Checklist show={step === 1} />
         <Receipt show={step === 2} />
@@ -101,6 +137,7 @@ function Story() {
             onClick={() => {
               setStep(i);
               setRun((r) => r + 1);
+              if (i === 0) setLoop((l) => l + 1);
             }}
             aria-label={`Show step ${i + 1}: ${c.tag}`}
             aria-current={i === step ? "step" : undefined}
@@ -183,6 +220,40 @@ function StoryCard({ step }: { step: number }) {
           </motion.span>
         )}
       </AnimatePresence>
+    </motion.div>
+  );
+}
+
+/** "20+ years" seal that stamps onto the panel at the start of every loop. */
+function ExperienceSeal() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 1.8, rotate: -30 }}
+      animate={{ opacity: 1, scale: 1, rotate: -12 }}
+      transition={{ type: "spring", stiffness: 420, damping: 18, delay: 0.15 }}
+      className="absolute bottom-[4%] left-[3.5%] z-30 aspect-square w-[19%] sm:w-[17%]"
+    >
+      <div className="relative size-full rounded-full bg-mint text-navy shadow-[0_12px_30px_-10px_rgb(55_245_199/0.6)]">
+        <motion.svg
+          viewBox="0 0 100 100"
+          className="absolute inset-0 size-full"
+          animate={{ rotate: 360 }}
+          transition={{ duration: 24, ease: "linear", repeat: Infinity }}
+        >
+          <defs>
+            <path id="seal-ring" d="M50 50 m-38 0 a38 38 0 1 1 76 0 a38 38 0 1 1 -76 0" />
+          </defs>
+          <text className="fill-navy font-mono text-[9.5px] font-medium uppercase">
+            <textPath href="#seal-ring" textLength="236" lengthAdjust="spacing">
+              Experience · Integrity · Honesty ·
+            </textPath>
+          </text>
+        </motion.svg>
+        <div className="absolute inset-[24%] flex flex-col items-center justify-center rounded-full border border-navy/30">
+          <span className="font-display text-[clamp(0.9rem,2.6vw,1.35rem)] font-bold leading-none tracking-[-0.04em]">20+</span>
+          <span className="mt-0.5 font-mono text-[clamp(0.4rem,1vw,0.55rem)] uppercase tracking-[0.12em]">Years</span>
+        </div>
+      </div>
     </motion.div>
   );
 }
