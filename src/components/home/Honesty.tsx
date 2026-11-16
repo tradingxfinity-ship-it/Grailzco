@@ -104,12 +104,14 @@ function YearsStack() {
           {started && (
             <motion.div
               key={cycle}
-              className="absolute inset-0"
+              className="absolute inset-0 grid grid-cols-[1.15fr_1fr] items-center gap-[6%] px-[6%] py-[7%]"
               exit={{ opacity: 0, scale: 0.97 }}
               transition={{ duration: 0.5, ease: EASE }}
             >
-              <YearCounter />
-              <Ledger />
+              <div className="flex min-w-0 flex-col gap-5 sm:gap-8">
+                <YearCounter />
+                <Ledger />
+              </div>
               <Stack />
             </motion.div>
           )}
@@ -136,7 +138,7 @@ function YearCounter() {
   }, []);
 
   return (
-    <div className="absolute left-[6%] top-[7%] max-w-[48%]">
+    <div>
       <p className="font-display text-[clamp(2.6rem,9vw,4.75rem)] font-bold leading-none tracking-[-0.05em] text-white tabular-nums">
         {String(n).padStart(2, "0")}
         <motion.span
@@ -158,7 +160,7 @@ function YearCounter() {
 /** One line per card as it lands: the range of what we buy, from everyday to high-end. */
 function Ledger() {
   return (
-    <ul className="absolute bottom-[7%] left-[5%] w-[52%] space-y-[2.2%] sm:left-[6%] sm:w-[42%]">
+    <ul className="space-y-1.5 sm:space-y-2">
       {STACK.map((c, i) => (
         <motion.li
           key={c.era}
@@ -167,7 +169,7 @@ function Ledger() {
           transition={{ duration: 0.4, delay: START + i * GAP + DROP * 0.7, ease: EASE }}
           className="flex items-center gap-2 rounded-lg border border-white/10 bg-navy-900/70 px-2 py-1 backdrop-blur sm:px-2.5 sm:py-1.5"
         >
-          <span className="w-[6.4em] shrink-0 whitespace-nowrap font-mono text-[0.5rem] uppercase tracking-[0.1em] text-mint sm:text-[0.62rem]">
+          <span className="hidden w-[6.4em] shrink-0 whitespace-nowrap font-mono sm:block text-[0.5rem] uppercase tracking-[0.1em] text-mint sm:text-[0.62rem]">
             {c.era}
           </span>
           <span className="min-w-0 flex-1 truncate text-[0.6rem] text-white/85 sm:text-[0.74rem]">{c.note}</span>
@@ -181,43 +183,45 @@ function Ledger() {
 function Stack() {
   const last = STACK.length - 1;
   return (
-    <div className="absolute left-[62%] top-[22%] w-[32%] [perspective:1200px] sm:left-[56%] sm:top-[20%] sm:w-[30%]">
-      {STACK.map((c, i) => {
-        const isTop = i === last;
-        return (
-          <motion.div
-            key={c.src}
-            className="absolute inset-x-0 top-0"
-            style={{ zIndex: i }}
-            initial={{ x: `${c.from[0]}%`, y: `${c.from[1]}%`, rotate: c.tilt * 4, opacity: 0 }}
-            animate={{
-              x: `${c.x}%`,
-              y: isTop ? [null, `${-i * 1.6}%`, `${-i * 1.6 - 6}%`] : `${-i * 1.6}%`,
-              rotate: isTop ? [null, c.tilt, 0] : c.tilt,
-              opacity: 1,
-              scale: isTop ? [null, 1, 1.06] : 1,
-            }}
-            transition={{
-              default: { duration: DROP, delay: START + i * GAP, ease: [0.3, 1.25, 0.5, 1] },
-              opacity: { duration: 0.2, delay: START + i * GAP },
-              ...(isTop && {
-                y: { duration: FLIP_AT - (START + i * GAP), delay: START + i * GAP, times: [0, 0.6, 1], ease: EASE },
-                rotate: { duration: FLIP_AT - (START + i * GAP), delay: START + i * GAP, times: [0, 0.6, 1], ease: EASE },
-                scale: { duration: FLIP_AT - (START + i * GAP), delay: START + i * GAP, times: [0, 0.6, 1], ease: EASE },
-              }),
-            }}
-          >
-            {isTop ? <FlipCard src={c.src} /> : <CardFace src={c.src} />}
-          </motion.div>
-        );
-      })}
-      {/* Spacer so the absolute stack has height */}
-      <div className="invisible aspect-[330/460] w-full" />
+    <div className="flex flex-col items-center pt-[12%]">
+      <div className="relative w-[82%] [perspective:1200px]">
+        {STACK.map((c, i) => {
+          const isTop = i === last;
+          return (
+            <motion.div
+              key={c.src}
+              className="absolute inset-x-0 top-0"
+              style={{ zIndex: i }}
+              initial={{ x: `${c.from[0]}%`, y: `${c.from[1]}%`, rotate: c.tilt * 4, opacity: 0 }}
+              animate={{
+                x: `${c.x}%`,
+                y: isTop ? [null, `${-i * 1.6}%`, `${-i * 1.6 - 6}%`] : `${-i * 1.6}%`,
+                rotate: isTop ? [null, c.tilt, 0] : c.tilt,
+                opacity: 1,
+                scale: isTop ? [null, 1, 1.06] : 1,
+              }}
+              transition={{
+                default: { duration: DROP, delay: START + i * GAP, ease: [0.3, 1.25, 0.5, 1] },
+                opacity: { duration: 0.2, delay: START + i * GAP },
+                ...(isTop && {
+                  y: { duration: FLIP_AT - (START + i * GAP), delay: START + i * GAP, times: [0, 0.6, 1], ease: EASE },
+                  rotate: { duration: FLIP_AT - (START + i * GAP), delay: START + i * GAP, times: [0, 0.6, 1], ease: EASE },
+                  scale: { duration: FLIP_AT - (START + i * GAP), delay: START + i * GAP, times: [0, 0.6, 1], ease: EASE },
+                }),
+              }}
+            >
+              {isTop ? <FlipCard src={c.src} /> : <CardFace src={c.src} />}
+            </motion.div>
+          );
+        })}
+        {/* Spacer so the absolute stack has height */}
+        <div className="invisible aspect-[330/460] w-full" />
+      </div>
       <motion.p
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, delay: FLIP_AT + 0.7, ease: EASE }}
-        className="absolute left-1/2 top-[108%] -translate-x-1/2 whitespace-nowrap rounded-full bg-mint px-3 py-1.5 font-mono text-[0.55rem] font-medium uppercase tracking-[0.12em] text-navy sm:text-[0.66rem]"
+        className="mt-[14%] whitespace-nowrap rounded-full bg-mint px-3 py-1.5 font-mono text-[0.55rem] font-medium uppercase tracking-[0.12em] text-navy sm:text-[0.66rem]"
       >
         <span className="hidden sm:inline">Every card · </span>Same care
       </motion.p>
