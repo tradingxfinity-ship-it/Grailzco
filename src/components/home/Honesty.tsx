@@ -21,14 +21,15 @@ const CHECKS = ["Corners", "Surface", "Edges", "Centering"] as const;
 /** About Us: a looping short story of one card, from arrival to payment, with nothing hidden. */
 export function Honesty() {
   return (
-    <section aria-labelledby="honesty-title" className="relative overflow-hidden bg-navy-900 py-20 md:py-28">
-      <div aria-hidden="true" className="grid-faint absolute inset-0 opacity-40 [mask-image:radial-gradient(ellipse_at_70%_50%,black,transparent_70%)]" />
+    <section aria-labelledby="honesty-title" className="relative overflow-hidden bg-white py-20 text-ink md:py-28">
       <div className="container-grail relative grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-5">
-          <SectionLabel index="01">About Us</SectionLabel>
-          <SplitHeadline id="honesty-title" lines={["Straight talk,", "no *games.*"]} className="display-md mt-6" />
+          <SectionLabel index="01" className="!text-ink/60 [&_span:first-child]:!text-ink [&_span:nth-child(2)]:!bg-ink/30">
+            About Us
+          </SectionLabel>
+          <SplitHeadline id="honesty-title" lines={["Straight talk,", "no *games.*"]} className="display-md mt-6 text-ink [&_.text-mint]:!text-[#0a9e78]" />
           <Reveal delay={0.15}>
-            <p className="lede mt-6 max-w-sm">We&apos;re collectors too. Here&apos;s what happens to your card, with nothing hidden.</p>
+            <p className="mt-6 max-w-sm text-[1.05rem] leading-relaxed text-ink/70">We&apos;re collectors too. Here&apos;s what happens to your card, with nothing hidden.</p>
           </Reveal>
         </div>
         <Reveal y={40} className="lg:col-span-7">
@@ -61,7 +62,7 @@ function Story() {
 
       <div
         aria-hidden="true"
-        className="hairline relative aspect-square w-full sm:aspect-[5/4] overflow-hidden rounded-[1.75rem] bg-[radial-gradient(ellipse_at_50%_40%,#0c2349,#04173a_60%,#000a1e)]"
+        className="relative aspect-square w-full sm:aspect-[5/4] overflow-hidden rounded-[1.75rem] shadow-[0_40px_80px_-36px_rgb(0_14_40/0.6)] bg-[radial-gradient(ellipse_at_50%_40%,#0c2349,#04173a_60%,#000a1e)]"
       >
         <div className="grid-faint absolute inset-0 opacity-60" />
 
@@ -105,11 +106,11 @@ function Story() {
             aria-current={i === step ? "step" : undefined}
             className="group text-left"
           >
-            <span className="block h-1 overflow-hidden rounded-full bg-white/10">
+            <span className="block h-1 overflow-hidden rounded-full bg-ink/10">
               <span
                 key={i === step ? `${step}-${run}` : "idle"}
                 className={cn(
-                  "block h-full rounded-full bg-mint",
+                  "block h-full rounded-full bg-[#0a9e78]",
                   i < step ? "w-full" : i === step ? (inView ? "story-fill" : "w-0") : "w-0",
                 )}
                 style={{ animationDuration: `${CHAPTER_MS}ms` }}
@@ -118,7 +119,7 @@ function Story() {
             <span
               className={cn(
                 "mt-2 block font-mono text-[0.6rem] uppercase tracking-[0.12em] transition-colors sm:text-[0.66rem]",
-                i === step ? "text-mint" : "text-haze group-hover:text-white",
+                i === step ? "text-[#0a9e78]" : "text-ink/45 group-hover:text-ink",
               )}
             >
               {c.tag}
