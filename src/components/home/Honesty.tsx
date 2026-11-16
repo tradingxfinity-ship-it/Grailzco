@@ -14,12 +14,12 @@ const PROOF = [
 
 /** Cards dropped onto the stack, bottom to top: everyday to high-end. The top one flips at the end. */
 const STACK = [
-  { src: "/images/cards/machamp-1st-edition.png", era: "Vintage", name: "Machamp 1st Edition", from: [-160, -40], tilt: -7, x: -3 },
-  { src: "/images/cards/bulbasaur.png", era: "Everyday", name: "Bulbasaur", from: [170, -60], tilt: 5, x: 3 },
-  { src: "/images/cards/kyogre-lv47.png", era: "Classic", name: "Kyogre LV.47", from: [-140, -140], tilt: -3, x: -2 },
-  { src: "/images/cards/greninja-ex.png", era: "Modern", name: "Greninja ex", from: [160, -130], tilt: 6, x: 2 },
-  { src: "/images/cards/victini.png", era: "Japanese", name: "Victini full art", from: [-30, -200], tilt: -4, x: -1 },
-  { src: "/images/cards/mega-charizard-x-ex.png", era: "High-end", name: "Mega Charizard X ex", from: [40, -210], tilt: 1, x: 0 },
+  { src: "/images/cards/machamp-1st-edition.png", era: "Vintage", note: "WOTC-era classics", from: [-160, -40], tilt: -7, x: -3 },
+  { src: "/images/cards/bulbasaur.png", era: "Everyday", note: "Bulk & commons", from: [170, -60], tilt: 5, x: 3 },
+  { src: "/images/cards/kyogre-lv47.png", era: "Classic", note: "2000s favorites", from: [-140, -140], tilt: -3, x: -2 },
+  { src: "/images/cards/greninja-ex.png", era: "Modern", note: "Today's hits", from: [160, -130], tilt: 6, x: 2 },
+  { src: "/images/cards/victini.png", era: "Japanese", note: "Rare imports", from: [-30, -200], tilt: -4, x: -1 },
+  { src: "/images/cards/mega-charizard-x-ex.png", era: "High-end", note: "Grails & chase cards", from: [40, -210], tilt: 1, x: 0 },
 ] as const;
 
 const START = 0.4; // seconds before the first card drops
@@ -155,13 +155,13 @@ function YearCounter() {
   );
 }
 
-/** One line per card as it lands: the range, from everyday to high-end. */
+/** One line per card as it lands: the range of what we buy, from everyday to high-end. */
 function Ledger() {
   return (
     <ul className="absolute bottom-[7%] left-[5%] w-[52%] space-y-[2.2%] sm:left-[6%] sm:w-[42%]">
       {STACK.map((c, i) => (
         <motion.li
-          key={c.name}
+          key={c.era}
           initial={{ opacity: 0, x: -14 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.4, delay: START + i * GAP + DROP * 0.7, ease: EASE }}
@@ -170,7 +170,7 @@ function Ledger() {
           <span className="w-[6.4em] shrink-0 whitespace-nowrap font-mono text-[0.5rem] uppercase tracking-[0.1em] text-mint sm:text-[0.62rem]">
             {c.era}
           </span>
-          <span className="min-w-0 flex-1 truncate text-[0.6rem] text-white/85 sm:text-[0.74rem]">{c.name}</span>
+          <span className="min-w-0 flex-1 truncate text-[0.6rem] text-white/85 sm:text-[0.74rem]">{c.note}</span>
           <Check className="size-3 shrink-0 text-mint" strokeWidth={3} />
         </motion.li>
       ))}
