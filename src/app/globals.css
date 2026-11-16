@@ -224,12 +224,3 @@ body {
     animation: none;
   }
 }
-
-/* About Us story: the active chapter's progress bar fills over the chapter's duration */
-.story-fill {
-  animation: story-fill linear forwards;
-}
-@keyframes story-fill {
-  from { width: 0; }
-  to { width: 100%; }
-}
