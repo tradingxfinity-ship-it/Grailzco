@@ -1,58 +1,26 @@
-import { Eye, Handshake, ReceiptText } from "lucide-react";
 import { BinderGrid } from "@/components/home/BinderGrid";
 import { Reveal, SectionLabel, SplitHeadline } from "@/components/ui/Reveal";
 import { images } from "@/content/images";
-
-const PROMISES = [
-  {
-    icon: Eye,
-    title: "We tell you what we see",
-    body: "Corners, edges, surface and centering, explained in plain words. The good and the not-so-good.",
-  },
-  {
-    icon: ReceiptText,
-    title: "We explain the number",
-    body: "If we make an offer, we walk you through how we got there, so it never feels like a guess.",
-  },
-  {
-    icon: Handshake,
-    title: "No pressure, ever",
-    body: "Take the offer or don't. Ask as many questions as you like. It's your collection and your call.",
-  },
-] as const;
 
 export function About() {
   return (
     <section id="about" aria-labelledby="about-title" className="relative bg-white py-20 text-ink md:py-28">
       <div className="container-grail grid items-center gap-12 lg:grid-cols-12 lg:gap-10">
         <div className="lg:col-span-5">
-          <SectionLabel index="01" className="!text-ink/60 [&_span:first-child]:!text-ink [&_span:nth-child(2)]:!bg-ink/30">
-            About Us
+          <SectionLabel index="02" className="!text-ink/60 [&_span:first-child]:!text-ink [&_span:nth-child(2)]:!bg-ink/30">
+            About Grailz Co
           </SectionLabel>
           <SplitHeadline
             id="about-title"
-            lines={["Straight talk,", "no *games.*"]}
+            lines={["Collectors,", "just like *you.*"]}
             className="display-md mt-6 text-ink [&_.text-mint]:!text-[#0a9e78]"
           />
           <Reveal delay={0.15}>
             <p className="mt-6 max-w-md text-[1.05rem] leading-relaxed text-ink/70">
-              We&apos;re collectors too, so we know what it means to hand over cards you care about. When we look at
-              your collection, we&apos;re honest and open about every step.
+              We&apos;re collectors focused on Pokémon and trading cards. Thinking about selling? Send us the details and a
+              few photos, and we&apos;ll take a proper look.
             </p>
           </Reveal>
-          <ul className="mt-8 space-y-5">
-            {PROMISES.map(({ icon: Icon, title, body }, i) => (
-              <Reveal as="li" key={title} delay={0.2 + i * 0.08} className="flex gap-4">
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-navy text-mint shadow-[0_10px_24px_-12px_rgb(0_14_40/0.7)]">
-                  <Icon aria-hidden="true" className="size-5" />
-                </span>
-                <div>
-                  <h3 className="font-display text-[1.1rem] font-semibold tracking-[-0.02em] text-ink">{title}</h3>
-                  <p className="mt-0.5 max-w-md text-[0.95rem] leading-relaxed text-ink/65">{body}</p>
-                </div>
-              </Reveal>
-            ))}
-          </ul>
         </div>
 
         {/* Binder page in a glass display case */}

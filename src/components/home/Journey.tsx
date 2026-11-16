@@ -19,7 +19,7 @@ export function Journey() {
     <section id="how-it-works" aria-labelledby="journey-title" className="relative border-t border-line bg-navy-900 py-24 md:py-36">
       <div className="container-grail">
         <div className="text-center">
-          <SectionLabel index="02" className="justify-center">
+          <SectionLabel index="03" className="justify-center">
             How it works
           </SectionLabel>
           <SplitHeadline

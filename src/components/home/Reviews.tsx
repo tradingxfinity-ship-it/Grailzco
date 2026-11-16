@@ -18,7 +18,7 @@ export function Reviews() {
       <div aria-hidden="true" className="absolute left-1/2 top-1/2 h-[30rem] w-[60rem] -translate-x-1/2 -translate-y-1/2 rounded-[50%] bg-mint/[0.06] blur-[140px]" />
 
       <div className="container-grail relative flex flex-col items-center text-center">
-        <SectionLabel index="03" className="justify-center">
+        <SectionLabel index="04" className="justify-center">
           Reviews
         </SectionLabel>
         <SplitHeadline
