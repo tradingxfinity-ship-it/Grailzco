@@ -225,16 +225,11 @@ body {
   }
 }
 
-/* Pulsing ring on the About Us inspection callouts */
-.honesty-ping {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: honesty-ping 2.4s ease-out infinite;
+/* About Us story: the active chapter's progress bar fills over the chapter's duration */
+.story-fill {
+  animation: story-fill linear forwards;
 }
-@keyframes honesty-ping {
-  from { transform: scale(1); opacity: 0.8; }
-  to { transform: scale(3.2); opacity: 0; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .honesty-ping { animation: none; opacity: 0; }
+@keyframes story-fill {
+  from { width: 0; }
+  to { width: 100%; }
 }
